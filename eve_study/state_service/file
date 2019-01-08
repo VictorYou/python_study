@@ -1,0 +1,288 @@
+[
+    {
+        "Id": "8a7ad089da051bbc9d76dff6f8128df959157999e29c275f621b82175c1f408d",
+        "Created": "2019-01-08T05:45:33.814430698Z",
+        "Path": "python",
+        "Args": [
+            "api.py"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 19515,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2019-01-08T05:45:35.188775019Z",
+            "FinishedAt": "0001-01-01T00:00:00Z",
+            "Health": {
+                "Status": "healthy",
+                "FailingStreak": 0,
+                "Log": [
+                    {
+                        "Start": "2019-01-08T13:47:05.19023131+08:00",
+                        "End": "2019-01-08T13:47:05.363191302+08:00",
+                        "ExitCode": 0,
+                        "Output": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r100   323  100   323    0     0  46683      0 --:--:-- --:--:-- --:--:-- 53833\n{\"_info\": {\"version\": \"0.7.2\", \"server\": \"Eve\"}, \"_links\": {\"child\": [{\"href\": \"labrequests\", \"title\": \"labrequests\"}, {\"href\": \"states\", \"title\": \"states\"}, {\"href\": \"config\", \"title\": \"config\"}, {\"href\": \"labs\", \"title\": \"labs\"}, {\"href\": \"reservations\", \"title\": \"reservations\"}, {\"href\": \"schema\", \"title\": \"schema\"}]}}"
+                    },
+                    {
+                        "Start": "2019-01-08T13:48:35.376217577+08:00",
+                        "End": "2019-01-08T13:48:35.566589945+08:00",
+                        "ExitCode": 0,
+                        "Output": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0{\"_info\": {\"version\": \"0.7.2\", \"server\": \"Eve\"}, \"_links\": {\"child\": [{\"href\": \"labrequests\", \"title\": \"labrequests\"}, {\"href\": \"states\", \"title\": \"states\"}, {\"href\": \"config\", \"title\": \"config\"}, {\"href\": \"labs\", \"title\": \"labs\"}, {\"href\": \"reservations\", \"title\": \"reservations\"}, {\"href\": \"schema\", \"title\": \"schema\"}]}}\r100   323  100   323    0     0  34372      0 --:--:-- --:--:-- --:--:-- 35888\n"
+                    },
+                    {
+                        "Start": "2019-01-08T13:50:05.590807235+08:00",
+                        "End": "2019-01-08T13:50:05.76180671+08:00",
+                        "ExitCode": 0,
+                        "Output": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0{\"_info\": {\"version\": \"0.7.2\", \"server\": \"Eve\"}, \"_links\": {\"child\": [{\"href\": \"labrequests\", \"title\": \"labrequests\"}, {\"href\": \"states\", \"title\": \"states\"}, {\"href\": \"config\", \"title\": \"config\"}, {\"href\": \"labs\", \"title\": \"labs\"}, {\"href\": \"reservations\", \"title\": \"reservations\"}, {\"href\": \"schema\", \"title\": \"schema\"}]}}\r100   323  100   323    0     0  45776      0 --:--:-- --:--:-- --:--:-- 53833\n"
+                    },
+                    {
+                        "Start": "2019-01-08T13:51:35.778523998+08:00",
+                        "End": "2019-01-08T13:51:35.980707886+08:00",
+                        "ExitCode": 0,
+                        "Output": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0{\"_info\": {\"version\": \"0.7.2\", \"server\": \"Eve\"}, \"_links\": {\"child\": [{\"href\": \"labrequests\", \"title\": \"labrequests\"}, {\"href\": \"states\", \"title\": \"states\"}, {\"href\": \"config\", \"title\": \"config\"}, {\"href\": \"labs\", \"title\": \"labs\"}, {\"href\": \"reservations\", \"title\": \"reservations\"}, {\"href\": \"schema\", \"title\": \"schema\"}]}}\r100   323  100   323    0     0  27358      0 --:--:-- --:--:-- --:--:-- 29363\n"
+                    },
+                    {
+                        "Start": "2019-01-08T13:53:06.00248123+08:00",
+                        "End": "2019-01-08T13:53:06.200601418+08:00",
+                        "ExitCode": 0,
+                        "Output": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r100   323  100   323    0     0  35793      0 --:--:-- --:--:-- -{\"_info\": {\"version\": \"0.7.2\", \"server\": \"Eve\"}, \"_links\": {\"child\": [{\"href\": \"labrequests\", \"title\": \"labrequests\"}, {\"href\": \"states\", \"title\": \"states\"}, {\"href\": \"config\", \"title\": \"config\"}, {\"href\": \"labs\", \"title\": \"labs\"}, {\"href\": \"reservations\", \"title\": \"reservations\"}, {\"href\": \"schema\", \"title\": \"schema\"}]}}-:--:-- 40375\n"
+                    }
+                ]
+            }
+        },
+        "Image": "sha256:3a8aa8b2c0433e7c8f0bbc98dea6ba632b6f0b1ab5b4325e7eb52eb9e671a95a",
+        "ResolvConfPath": "/var/lib/docker/containers/8a7ad089da051bbc9d76dff6f8128df959157999e29c275f621b82175c1f408d/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/8a7ad089da051bbc9d76dff6f8128df959157999e29c275f621b82175c1f408d/hostname",
+        "HostsPath": "/var/lib/docker/containers/8a7ad089da051bbc9d76dff6f8128df959157999e29c275f621b82175c1f408d/hosts",
+        "LogPath": "/var/lib/docker/containers/8a7ad089da051bbc9d76dff6f8128df959157999e29c275f621b82175c1f408d/8a7ad089da051bbc9d76dff6f8128df959157999e29c275f621b82175c1f408d-json.log",
+        "Name": "/state_service_web_1_d81daf0871ab",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "state_service_default",
+            "PortBindings": {
+                "5000/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8000"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "always",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": [],
+            "CapAdd": null,
+            "CapDrop": null,
+            "Dns": null,
+            "DnsOptions": null,
+            "DnsSearch": null,
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "shareable",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": null,
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": null,
+            "DeviceCgroupRules": null,
+            "DiskQuota": 0,
+            "KernelMemory": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": 0,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/asound",
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/416cb0ded4c02d4bfc4c29dccf935bbaac0d7b547b2710b11c25c4dcc49846b6-init/diff:/var/lib/docker/overlay2/d647782c9a4583b575c0de4c1691cc9dc54b2c1b039ee847e1ad564a7bef3476/diff:/var/lib/docker/overlay2/3259af4310e99312930a805c3b0c230467944c31f924167b737f1fd9161e1d84/diff:/var/lib/docker/overlay2/cb374be1668f728786985eb5f53baeb64c765182c0e3d86bdfebf205da370625/diff:/var/lib/docker/overlay2/f8585c258f0ecc6abdef9fb2e774d2380833c7e648ec3980e6a5a87ab4d80453/diff:/var/lib/docker/overlay2/7de6df3303145feb467f568421178287ad6d9f871e8f9643f7149d01f7bcb0de/diff:/var/lib/docker/overlay2/ae8a53322fd0337538c8f22c510ddd060d029f91dc7d26cf4d36746f5c3fd59b/diff:/var/lib/docker/overlay2/4df641d855a5d90d8a66e04797362eec7f07a538b337691b90bf8b027744faac/diff:/var/lib/docker/overlay2/da172e73924bae7197f120f96446e68b473d3ca94b963405d474bbd7874b54e2/diff:/var/lib/docker/overlay2/0fb6440426498347b31ea8fb09a015b9ce13704060c73db47ce8fb1071f6a020/diff:/var/lib/docker/overlay2/48035277327c746b42aa888a8ac67ac750a2796feb6f05d93dca3e25c929d766/diff:/var/lib/docker/overlay2/23b5d393ab5baa87dc890c1e53c13b1c916e5a44e0b29f38b7e7fd005cb9653e/diff:/var/lib/docker/overlay2/1f8e4f307930169b9751b17f741f0058c0283113e189b5055c996d7cf4bf524f/diff:/var/lib/docker/overlay2/e522efa304037cb8a5b85a80a57073285e9786082b7e3d334f3682cf50f0f4ed/diff:/var/lib/docker/overlay2/2180704d698dfb9e5db9a565811ce0295737b46e4c093fb57f779e86d069baf0/diff:/var/lib/docker/overlay2/2ba75d77b976f5ab696fc992e2a6ca431fd5d7cab24bfad35a557e788d47fe3f/diff",
+                "MergedDir": "/var/lib/docker/overlay2/416cb0ded4c02d4bfc4c29dccf935bbaac0d7b547b2710b11c25c4dcc49846b6/merged",
+                "UpperDir": "/var/lib/docker/overlay2/416cb0ded4c02d4bfc4c29dccf935bbaac0d7b547b2710b11c25c4dcc49846b6/diff",
+                "WorkDir": "/var/lib/docker/overlay2/416cb0ded4c02d4bfc4c29dccf935bbaac0d7b547b2710b11c25c4dcc49846b6/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "8a7ad089da05",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5000/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "STATE_SERVICE_MONGO_HOST=mongo",
+                "STATE_SERVICE_MONGO_PORT=27017",
+                "STATE_SERVICE_MONGO_DBNAME=lss_dev",
+                "STATE_SERVICE_SWAGGER_UI_URI=http://localhost:8080",
+                "STATE_SERVICE_API_LOG_LEVEL=DEBUG",
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "PYTHONIOENCODING=UTF-8",
+                "GPG_KEY=C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF",
+                "PYTHON_VERSION=2.7.15",
+                "PYTHON_PIP_VERSION=18.1"
+            ],
+            "Cmd": [
+                "python",
+                "api.py"
+            ],
+            "Healthcheck": {
+                "Test": [
+                    "CMD",
+                    "curl",
+                    "-f",
+                    "--noproxy",
+                    "localhost",
+                    "http://localhost:5000"
+                ],
+                "Interval": 90000000000,
+                "Timeout": 10000000000,
+                "Retries": 3
+            },
+            "Image": "state_service_web",
+            "Volumes": null,
+            "WorkingDir": "/src",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "com.docker.compose.config-hash": "67f6ade9d05608cd3c35681811a18a7719f375ce960ac0689d80c37f76530bb6",
+                "com.docker.compose.container-number": "1",
+                "com.docker.compose.oneoff": "False",
+                "com.docker.compose.project": "state_service",
+                "com.docker.compose.service": "web",
+                "com.docker.compose.slug": "d81daf0871abc20d18447a165b2be8517ecc6fae71bd8dfddd099341da4c264",
+                "com.docker.compose.version": "1.23.1"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "d4893f36c930ae36b61509dfaa7a6f0533c46c1e37af86140cfb4e13155da402",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {
+                "5000/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "8000"
+                    }
+                ]
+            },
+            "SandboxKey": "/var/run/docker/netns/d4893f36c930",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "state_service_default": {
+                    "IPAMConfig": null,
+                    "Links": [
+                        "state_service_mongo_1_dfea75c8ba0c:mongo",
+                        "state_service_mongo_1_dfea75c8ba0c:mongo_1_dfea75c8ba0c",
+                        "state_service_mongo_1_dfea75c8ba0c:state_service_mongo_1_dfea75c8ba0c"
+                    ],
+                    "Aliases": [
+                        "web",
+                        "8a7ad089da05"
+                    ],
+                    "NetworkID": "565298c277766fe52bf46fd7ce3df9a0045689f5972c7f516f8b455227fe6ffb",
+                    "EndpointID": "9bdc6369ad64bcf506c5196aa31382b217d790f444a0684a0bdc21a1fc356638",
+                    "Gateway": "172.22.0.1",
+                    "IPAddress": "172.22.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:16:00:03",
+                    "DriverOpts": null
+                }
+            }
+        }
+    }
+]

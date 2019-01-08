@@ -1,0 +1,35 @@
+version: '2.1'
+services:
+  # web interface providing REST interface of LSS
+  web:
+    restart: always
+    build:
+        context: ./src
+        args:
+            http_proxy: http://fihel1d-proxy.emea.nsn-net.net:8080/
+            https_proxy: http://fihel1d-proxy.emea.nsn-net.net:8080/
+    command: python api.py
+    ports:
+      - "8000:5000"
+    depends_on:
+      - "mongo"
+    links:
+      - mongo
+    environment:
+      - STATE_SERVICE_MONGO_HOST=mongo
+      - STATE_SERVICE_MONGO_PORT=27017
+      - STATE_SERVICE_MONGO_DBNAME=lss_dev
+      - STATE_SERVICE_SWAGGER_UI_URI=http://localhost:8080
+      - STATE_SERVICE_API_LOG_LEVEL=DEBUG
+      # - STATE_SERVICE_LAB_WHITE_LIST=
+      # uncomment to enable:
+      # - STATE_SERVICE_ENABLE_OPLOG=yes  # NOTE! Records all data modifying operations in DB. Performance impacts are likely and unknown.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "--noproxy", "localhost", "http://localhost:5000"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  # DB backend
+  mongo:
+    restart: always
+    image: "mongo:3.4.5"

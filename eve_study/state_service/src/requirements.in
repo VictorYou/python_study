@@ -1,0 +1,9 @@
+eve
+eve-swagger
+flask-cors
+celery
+cherrypy
+flower
+requests>=2.10
+paramiko
+termcolor

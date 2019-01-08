@@ -1,0 +1,34 @@
+stage("Clone"){
+    node("robot && docker"){
+                step([$class: 'WsCleanup'])
+    
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'gerrit-access', url: 'ssh://gerrite1.ext.net.nokia.com:8282/netact/cicdna']]])
+
+        
+    }
+    
+}
+
+stage("Build") {
+    node("robot && docker") {
+        sh '''
+            cd ${WORKSPACE}/state_service/src
+            docker-compose build           
+            '''
+    }
+}
+stage("Start"){
+    node('robot && docker'){
+         sh '''
+             cd ${WORKSPACE}/state_service/src
+             docker-compose up -d
+             '''
+    }
+}
+stage("Robot-test"){
+    node('robot && docker'){
+        sh 'mkdir robot_out'
+        sh '''robot --outputdir ${WORKSPACE}/robot_out ${WORKSPACE}/state_service/tests/lab_test_robot.robot'''
+    }
+}
+

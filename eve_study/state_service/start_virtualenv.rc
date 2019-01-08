@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# Starts the virtualenv environment in same directory as this RC file, and
+# using the name .venv_<username or $JOBNAME>
+# The virtualenv is initialized if,
+#   - cmd arg 'rebuild' s provided
+#   - or .venv_<name> does not exist 
+#
+# Usage: source <name of this file>
+
+CURRDIR=$( cd $(dirname $0) ; pwd)
+JOB_NAME=${JOB_NAME-$(whoami)}
+WORKSPACE=$(dirname ${CURRDIR})
+
+set | grep -e CURRDIR -e JOB_NAME -e WORKSPACE
+
+if [ ! -d "${CURRDIR}/.venv_${JOB_NAME}" -o "$1" == "rebuild" ]
+then
+	rebuild=y
+fi
+
+if [ "$rebuild" == "y" ]
+then
+	python2_bin=/usr/bin/python2
+	set -x
+	virtualenv -p "${python2_bin}" "${CURRDIR}/.venv_${JOB_NAME}" ||exit 1
+	set +x
+fi
+source "${CURRDIR}/.venv_${JOB_NAME}/bin/activate" ||exit 1
+cd "${CURRDIR}"/src
+if [ "$rebuild" == "y" ]
+then
+	pip install -r requirements.txt ||exit 1
+fi
+
+cd -
+export PYTHONPATH=${PYTHONPATH+${PYTHONPATH}:}.:${CURRDIR}/src:${CURRDIR}/unittest:${CURRDIR}/tests:${CURRDIR}/.venv_${JOB_NAME}/lib/python2.7/site-packages/
+export CURRDIR WORKSPACE

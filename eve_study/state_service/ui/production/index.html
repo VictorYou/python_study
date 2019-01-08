@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="../resources/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Demo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Labs
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="requests.html">Lab requests</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="container">
+                <div id="graphs" class="text-center">
+                    <div id="graph-container" class="collapse show  text-center" aria-expanded="show">
+                        <h2>Status</h2>
+                        <div class="canvas-container">
+                            <canvas id="chart-container-1"></canvas>
+                        </div>
+
+                        <div class="canvas-container">
+                            <canvas id="chart-container-2"></canvas>
+                        </div>
+
+                        <div class="canvas-container">
+                            <canvas id="chart-container-3"></canvas>
+                        </div>
+                        <span id="total-labs">Total labs:
+                            <span id="number-of-labs"></span>
+                        </span>
+                    </div>
+                    <button id="btn-toggle-graphs" class="btn btn-outline-primary btn-sm" onclick="toggleGraphs()">Toggle graphs</button>
+                </div>
+
+
+                <div id="search-form" class="form">
+                    </form>
+                    <input id="search-bar" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Type in keywords to filter labs"></i>
+                </div>
+
+                <div id="test" class="card card-top">
+                    <div class="card-header">
+                        <div class="row">
+                            <h5 class="col-md-11">
+                                <a class="row">
+                                    <span class="col-md-2 col-sm-6">Availability</span>
+                                    <span class="col-md-2 col-sm-6">Name</span>
+                                    <span class="col-md 2 col-sm-6">Type</span>
+                                    <span class="col-md-3 col-sm-6">Status</span>
+                                    <span class="col-md-2 col-sm-6">Reserved by</span>
+                                </a>
+                            </h5>
+                            <div class="col-md-1 text-center">
+                            <a id="additional-settings-toggle" data-toggle="collapse" data-target="#additional-settings">
+                                <i class="fa fa-ellipsis-h fa-2x" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="additional-settings" class="collapse" role="tabpanel" aria-labelledby="heading-${counter}" data-parent="">
+                  <button class="btn btn-secondary" onclick="createLabModal()" data-toggle="modal" data-target="#modal">Create a lab</button>
+                  <button class="btn btn-secondary">Do something</button>
+                </div>
+
+                <div id="accordion" role="tablist"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Loading spinner -->
+    <div id="loader"></div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous">
+    </script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+
+    <script src="resources/underscore.js"></script>
+    <script src="resources/script.js">
+    </script>
+
+</body>
+
+</html>

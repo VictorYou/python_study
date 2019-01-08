@@ -1,0 +1,9 @@
+FROM python:2.7
+WORKDIR /src
+ADD requirements.txt /src/
+RUN pip install -r requirements.txt
+ADD client/*.py /src/client/
+ADD client.py /src/
+# dcapi dependencies
+ADD dc*.py /src/
+ADD ilo/*.py /src/ilo/
