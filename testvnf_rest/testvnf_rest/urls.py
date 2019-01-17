@@ -1,4 +1,4 @@
-"""example URL Configuration
+"""testvnf_rest URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -14,23 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets, routers
-from . import views
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-  class Meta:
-    model = User
-    fields = ('url', 'username', 'email', 'is_staff')
-
-class UserViewSet(viewsets.ModelViewSet):
-  queryset = User.objects.all()
-  serializer_class=UserSerializer
-
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+from django.contrib import admin
 
 urlpatterns = [
-  url(r'suts$', views.AddReq.as_view(), name='AddReq'),
-  url(r'^', include(router.urls)),
+    url(r'^suts/', include('SutService.urls')),
+    url(r'^admin/', admin.site.urls),
 ]

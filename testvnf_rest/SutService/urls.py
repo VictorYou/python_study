@@ -16,21 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets, routers
+
 from . import views
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-  class Meta:
-    model = User
-    fields = ('url', 'username', 'email', 'is_staff')
-
-class UserViewSet(viewsets.ModelViewSet):
-  queryset = User.objects.all()
-  serializer_class=UserSerializer
+from .views import SutVnfViewSet, AddReq
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+router.register(r'suts', SutVnfViewSet)
 
 urlpatterns = [
-  url(r'suts$', views.AddReq.as_view(), name='AddReq'),
+  url(r'suts$', views.AddReq.as_view(), name='suts'),
   url(r'^', include(router.urls)),
 ]
+

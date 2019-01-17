@@ -2,6 +2,10 @@
 
 from models import Sut
 
+from serializers import SutSerializer
+
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import list_route
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
@@ -13,6 +17,5 @@ class AddReq(GenericAPIView):
     
 
 class SutVnfViewSet(ModelViewSet):
-    queryset = Sut.objects.all()
-    serializer_class = SutSerializer
-
+  queryset = Sut.objects.all()
+  serializer_class = SutSerializer
