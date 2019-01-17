@@ -42,6 +42,12 @@ if os.getenv('PYDOC_RUN') is None:
     # These params are for testing purposes. STATE_SERVICE_TESTING_ENABLED means that storage API will not be used
     STATE_SERVICE_TESTING_ENABLED = True if os.getenv('STATE_SERVICE_TESTING_ENABLED', "") == "yes" else False
 
+    @app.route('/suts', methods=['POST'])
+    def route_add_a_sut():
+        logger.warning("to add a sut")
+        response, last_modified, etag, status = _labrequests_update_expire_after(labrequest_id)
+        return json.dumps(response, cls=app.data.json_encoder_class), status
+
     @app.route('/labrequests/<labrequest_id>/keepalive', methods=['PATCH'])  # TODO: CORS doesn't seem to work to this
     def route_labrequest_keepalive(labrequest_id):
         if os.getenv('STATE_SERVICE_API_DISABLE_TASKS'):
@@ -51,48 +57,47 @@ if os.getenv('PYDOC_RUN') is None:
         response, last_modified, etag, status = _labrequests_update_expire_after(labrequest_id)
         return json.dumps(response, cls=app.data.json_encoder_class), status
 
-    @app.route('/states/<state_id>/revert', methods=['PATCH'])  # TODO: CORS doesn't seem to work to this
-    def route_state_revert(state_id):
-        try:
-            # NOTE! get_internal returns: response, last_modified, etag, status, headers
-            #       response, status and headers seem ok, but etag and last_modified are None.
-            response, last_modified, etag, status, headers = get_internal('states', _id = state_id)
-            states = response.get('_items')
-            logger.debug('status: %s states: %s' % (status, states))
-            if not states or status >= 400:
-                return json.dumps({"_status": "ERR",
-                                   "_issues": "states/{}/revert not found".format(state_id)}), 404
-            lab_id = str(states[0]['lab'])
-            lab = _get_internal_item('labs', _id = lab_id)
-            logger.debug('Lab: %s for id=%s' % (lab, lab_id))
-            _update_with_retry('labs', lab_id, {'status': "queued_for_revert"})
-            if os.getenv('STATE_SERVICE_API_DISABLE_TASKS'):
-                logger.warning("STATE_SERVICE_API_DISABLE_TASKS defined, not sending Celery task \"snapshot_tasks.revert_to_snapshot.delay(lab_id={}, state_id={})\"".format(lab_id, state_id))
-            else:
-                logger.debug('****** STATE_SERVICE_TESTING_ENABLED: %s' % (STATE_SERVICE_TESTING_ENABLED))
-                lab_name = lab['lab_name']
-                # get lab_white_list from DB or from LAB_WHITE_LIST
-                lab_white_list_response = _get_internal_item('config', 'LAB_WHITE_LIST', 'name', default='')
-                lab_white_list = lab_white_list_response['value'].split() if lab_white_list_response != '' else None
-                logger.debug('****** lab white list from DB: %s ******' % (lab_white_list))
-                lab_white_list = LAB_WHITE_LIST if lab_white_list is None else lab_white_list
-
-                logger.debug('****** lab=%s is in LAB_WHITE_LIST: %s? %s' % (lab_name, lab_white_list, lab_name in lab_white_list))
-                lab_info = dict(lab_name=lab_name, reservation=str(lab.get('reservation'))) 
-                logger.debug('route_state_revert(): lab_info = %s' % (lab_info))
-                logger.debug('route_state_revert(): lab_info[reservation] = %s [%s]' % (lab_info['reservation'], type(lab_info['reservation'])))
-                snapshot_tasks.revert_to_snapshot.delay(
-                    lab_id=lab_id, 
-                    lab_info=lab_info,
-                    state_id=state_id, 
-                    lab_whitelisted=(lab_name in lab_white_list), 
-                    testing_enabled=STATE_SERVICE_TESTING_ENABLED)
-        except Exception as e:
-            logger.exception(e)
-            logger.error("Failed to process state revert request. Check above traceback for details.")
-            return json.dumps({"_status": "ERR",
-                               "_issues": {"exception": e.message}}), 500
-        return json.dumps({"_status": "OK"}), 202
+#    @app.route('/states/<state_id>/revert', methods=['PATCH'])  # TODO: CORS doesn't seem to work to this
+#    def route_state_revert(state_id):
+#        try:
+#            # NOTE! get_internal returns: response, last_modified, etag, status, headers
+#            #       response, status and headers seem ok, but etag and last_modified are None.
+#            response, last_modified, etag, status, headers = get_internal('states', _id = state_id)
+#            states = response.get('_items')
+#            logger.debug('status: %s states: %s' % (status, states))
+#            if not states or status >= 400:
+#                return json.dumps({"_status": "ERR",
+#                                   "_issues": "states/{}/revert not found".format(state_id)}), 404
+#            lab_id = str(states[0]['lab'])
+#            lab = _get_internal_item('labs', _id = lab_id)
+#            logger.debug('Lab: %s for id=%s' % (lab, lab_id))
+#            _update_with_retry('labs', lab_id, {'status': "queued_for_revert"})
+#            if os.getenv('STATE_SERVICE_API_DISABLE_TASKS'):
+#                logger.warning("STATE_SERVICE_API_DISABLE_TASKS defined, not sending Celery task \"snapshot_tasks.revert_to_snapshot.delay(lab_id={}, state_id={})\"".format(lab_id, state_id))
+#            else:
+#                logger.debug('****** STATE_SERVICE_TESTING_ENABLED: %s' % (STATE_SERVICE_TESTING_ENABLED))
+#                lab_name = lab['lab_name']
+#                # get lab_white_list from DB or from LAB_WHITE_LIST
+#                lab_white_list_response = _get_internal_item('config', 'LAB_WHITE_LIST', 'name', default='')
+#                lab_white_list = lab_white_list_response['value'].split() if lab_white_list_response != '' else None
+#                logger.debug('****** lab white list from DB: %s ******' % (lab_white_list))
+#                lab_white_list = LAB_WHITE_LIST if lab_white_list is None else lab_white_list
+#
+#                logger.debug('****** lab=%s is in LAB_WHITE_LIST: %s? %s' % (lab_name, lab_white_list, lab_name in lab_white_list))
+#                lab_info = dict(lab_name=lab_name, reservation=str(lab.get('reservation'))) 
+#                logger.debug('route_state_revert(): lab_info = %s' % (lab_info))
+#                logger.debug('route_state_revert(): lab_info[reservation] = %s [%s]' % (lab_info['reservation'], type(lab_info['reservation'])))
+#                snapshot_tasks.revert_to_snapshot.delay(
+#                    lab_id=lab_id, 
+#                    lab_info=lab_info,
+#                    state_id=state_id, 
+#                    lab_whitelisted=(lab_name in lab_white_list), 
+#                    testing_enabled=STATE_SERVICE_TESTING_ENABLED)
+#            logger.exception(e)
+#            logger.error("Failed to process state revert request. Check above traceback for details.")
+#            return json.dumps({"_status": "ERR",
+#                               "_issues": {"exception": e.message}}), 500
+#        return json.dumps({"_status": "OK"}), 202
 
 def post_POST_states_trigger_take_snapshot(_request, response):
     """Triggers snapshot creation for each new state object.

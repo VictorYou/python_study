@@ -9,6 +9,13 @@ import os
 
 # - datetime: Defaults to the RFC1123 (ex RFC 822) standard a, %d %b %Y %H:%M:%S GMT ("Tue, 02 Apr 2013 10:29:13 GMT").
 DOMAIN = dict(
+suts = {
+  'schema': {
+    'suts': {
+      'items': 'list'
+    }
+  }
+},
 reservations = {
     'mongo_indexes': {'res_expire_at': ([('expireAt', 1)], {"expireAfterSeconds": 0})},
     'schema': {

@@ -1,0 +1,7 @@
+INSTALLED_APPS = ( 
+  'rest_framework',
+)
+RESTFRAMEWORK = {
+  'DEFAULT_PERMISSION_CLASSES'
+}
+
