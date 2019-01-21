@@ -4,7 +4,6 @@ import random
 from django.db import models
 
 def generate_sutId():
-  # todo: Who/How generates it?
   return random.randint(0, 10)
 
 class Sut(models.Model):
@@ -16,7 +15,7 @@ class Sut(models.Model):
     (U, 'Unavailable'),
     (F, 'Failed'),
   )
-  version = models.CharField(max_length=20)
+  version = models.CharField(max_length=20, null=True)
   sutId = models.CharField(max_length=20, default=generate_sutId, unique=True)
   sutStatus = models.CharField(max_length=15, choices=STATUS_CHOICES, default=A)
 
