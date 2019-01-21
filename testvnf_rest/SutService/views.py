@@ -9,13 +9,13 @@ from rest_framework.decorators import list_route
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-class AddReq(GenericAPIView):
+class TestVNFReq(GenericAPIView):
   def post(self, request, *args, **kwargs):
     response = Response()
+    print "tester"
     response.data = {'sutId': 1}
     return response
     
-class QueryReq(GenericAPIView):
   def get(self, request, *args, **kwargs):
     response = Response()
     response.data = "OK"
