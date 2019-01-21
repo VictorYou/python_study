@@ -25,6 +25,7 @@ router.register(r'suts', SutVnfViewSet)
 
 urlpatterns = [
   url(r'suts$', views.AddReq.as_view(), name='suts'),
+  url(r'$', views.QueryReq.as_view()),
   url(r'^', include(router.urls)),
 ]
 

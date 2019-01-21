@@ -15,6 +15,11 @@ class AddReq(GenericAPIView):
     response.data = {'sutId': 1}
     return response
     
+class QueryReq(GenericAPIView):
+  def get(self, request, *args, **kwargs):
+    response = Response()
+    response.data = "OK"
+    return response
 
 class SutVnfViewSet(ModelViewSet):
   queryset = Sut.objects.all()
