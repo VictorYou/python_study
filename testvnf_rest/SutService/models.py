@@ -4,7 +4,7 @@ import random
 from django.db import models
 
 def generate_sutId():
-  return random.randint(0, 10)
+  return random.randint(0, 100000000000)
 
 class Sut(models.Model):
   A = 'A'
