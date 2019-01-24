@@ -18,14 +18,14 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets, routers
 
 from . import views
-from .views import SutVnfViewSet, TestVNFReq
+from .views import SutVnfViewSet, SetupEnvReq
 
 router = routers.DefaultRouter()
 router.register(r'suts', SutVnfViewSet)
 
 urlpatterns = [
-  url(r'suts', views.TestVNFReq.as_view()),
-  url(r'suts/<int:pk>/', views.TestVNFReq.as_view()),
+  url(r'suts', views.SetupEnvReq.as_view()),
+  url(r'suts/<int:pk>/', views.SetupEnvReq.as_view()),
   url(r'^', include(router.urls)),
 ]
 

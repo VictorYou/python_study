@@ -1,10 +1,10 @@
 #!/bin/env python
 
-from robot.libraries.BuiltIn import BuiltIn
-import resource
+#from robot.libraries.BuiltIn import BuiltIn
+#import resource
 import os
 
-ROBOT = BuiltIn()
+#ROBOT = BuiltIn()
 
 
 def robot_var(variable):
@@ -15,7 +15,7 @@ class Testvnf_keywords:
 
   """
 
-  ROBOT_LIBRARY_SCOPE = "GLOBAL"
+#  ROBOT_LIBRARY_SCOPE = "GLOBAL"
 
   def testvnf_startup(self):
     manage_py = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'manage.py')
