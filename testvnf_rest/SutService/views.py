@@ -13,7 +13,8 @@ class SetupEnvReq(GenericAPIView):
   def post(self, request, *args, **kwargs):
     response = Response()
     try:
-      sut = Sut.objects.create(version='0.0.1', sutStatus='A')
+      sutId = request.data['sutId']
+      sut = Sut.objects.create(sutId=sutId, version='0.0.1', sutStatus='A')
     except Exception as e:
       print e.message
     response.data = {'sutId': sut.sutId}

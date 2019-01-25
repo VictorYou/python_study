@@ -19,6 +19,7 @@ class Testvnf_keywords:
 
   def testvnf_startup(self):
     manage_py = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'manage.py')
+    self.__manage_py = manage_py
     command = manage_py + ' ' + 'runserver' + ' &'
     print "command: {}".format(command)
     os.system(command)
@@ -29,3 +30,6 @@ class Testvnf_keywords:
     command = 'kill -9 ' + pid
     print "command: {}".format(command)
     os.system(command)
+    command = self.__manage_py + ' ' + 'delete_sut'
+    print "command: {}".format(command)
+    os.system(self.__manage_py) 

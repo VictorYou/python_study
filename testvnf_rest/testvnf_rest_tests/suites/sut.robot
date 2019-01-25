@@ -8,6 +8,7 @@
 |    | [Documentation] | a test suite to add one SUT |
 |    | [Setup] | Testvnf Startup |
 |    | [Timeout] | 1 minute |
-|    | ${response}= | Send HTTP No Proxy | POST | ${TESTVNF_URL}/suts/suts/ |
-|    | Should Contain | ${response} | sutId |
+|    | ${randomint} | Evaluate | random.randint(0,100000) | modules=random |
+|    | ${response}= | Send HTTP No Proxy | POST | ${TESTVNF_URL}/suts/suts/ | -d sutId=${randomint} |
+|    | Should Match Regexp | ${response} | {"sutId":"\\d+"} |
 |    | [Teardown] | Testvnf Teardown |

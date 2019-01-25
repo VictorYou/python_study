@@ -24,7 +24,7 @@ router = routers.DefaultRouter()
 router.register(r'suts', SutVnfViewSet)
 
 urlpatterns = [
-  url(r'suts', views.SetupEnvReq.as_view()),
+  url(r'suts', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
   url(r'suts/<int:pk>/', views.SetupEnvReq.as_view()),
   url(r'^', include(router.urls)),
 ]
