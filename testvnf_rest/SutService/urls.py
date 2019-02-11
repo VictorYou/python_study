@@ -21,11 +21,11 @@ from . import views
 from .views import SutVnfViewSet, SetupEnvReq
 
 router = routers.DefaultRouter()
-router.register(r'suts', SutVnfViewSet)
+router.register(prefix='suts', viewset=SutVnfViewSet)
 
 urlpatterns = [
-  url(r'suts', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
-  url(r'suts/<int:pk>/', views.SetupEnvReq.as_view()),
-  url(r'^', include(router.urls)),
+  url(r'^$', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
+#  url(r'suts/<int:pk>/', views.SetupEnvReq.as_view()),
+#  url(r'^', include(router.urls)),
 ]
 

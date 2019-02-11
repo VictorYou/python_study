@@ -12,6 +12,7 @@ from rest_framework.response import Response
 class SetupEnvReq(GenericAPIView):
   def post(self, request, *args, **kwargs):
     response = Response()
+    print "hello"
     try:
       sutId = request.data['sutId']
       sut = Sut.objects.create(sutId=sutId, version='0.0.1', sutStatus='A')
