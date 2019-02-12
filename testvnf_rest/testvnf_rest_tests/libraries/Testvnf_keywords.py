@@ -32,4 +32,4 @@ class Testvnf_keywords:
     os.system(command)
     command = self.__manage_py + ' ' + 'delete_sut'
     print "command: {}".format(command)
-    os.system(self.__manage_py) 
+    os.system(command) 

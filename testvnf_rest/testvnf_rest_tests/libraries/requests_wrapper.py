@@ -14,7 +14,7 @@ class requests_wrapper(object):
     def __init__(self, base_url=''):
         self.base_url = base_url
 
-    def send_http_no_proxy(self, method, url, params):
+    def send_http_no_proxy(self, method, url, params=''):
       command = "curl --noproxy '*' -X " + method + " " + url + " " +params
       print "command: {}".format(command)
       output = os.popen(command).read().strip()

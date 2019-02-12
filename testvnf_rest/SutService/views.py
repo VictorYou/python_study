@@ -21,19 +21,23 @@ class SetupEnvReq(GenericAPIView):
     response.data = {'sutId': sut.sutId}
     return response
     
-  def get(self, request, *args, **kwargs):
+class TestcaseReq(GenericAPIView): 
+  def get(self, request, sutId, *args, **kwargs):
     response = Response()
     sutlist = Sut.objects.all()
+    tc_list = [1, 2, 3]
     try:
-      sut = sutlist.first()
+      for sut in Sut.objects.all():
+        print "sut id: {}".format(sut.sutId)
+        print "pk: {}".format(sut.pk)
+      sut = Sut.objects.get(sutId=sutId)
+      response.data = {'result': 'OK'}
+      response.data.update({'tc list': tc_list})
     except Exception as e:
+      response.data = {'result': 'NOK'}
       print "exception caught"
       print e.__doc__
       print e.message
-
-    for sut in sutlist:
-      print "sut id: {}".format(sut.sutId)
-    response.data = "OK"
     return response
 
 class SutVnfViewSet(ModelViewSet):
