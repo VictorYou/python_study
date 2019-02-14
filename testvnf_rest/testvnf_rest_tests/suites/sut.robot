@@ -59,8 +59,34 @@
 |    | Should Contain | ${response} | "result":"OK" |
 |    | [Teardown] | Testvnf Teardown |
 
+| remove a sut OK |
+|    | [Documentation] | get test case from test vnf |
+|    | [Setup] | Testvnf Startup |
+|    | ${randomsutId} | Evaluate | random.randint(0,10000) | modules=random |
+|    | ${randomtvnfId} | Evaluate | random.randint(0,10000) | modules=random |
+|    | Add One SUT | ${randomsutId} | ${randomtvnfId} |
+|    | ${ret}= | Remove One SUT | ${randomsutId} |
+|    | Should Contain | ${ret} | "result":"OK" |
+|    | [Teardown] | Testvnf Teardown |
+
+| remove a sut NOK |
+|    | [Documentation] | get test case from test vnf |
+|    | [Setup] | Testvnf Startup |
+|    | ${randomsutId} | Evaluate | random.randint(0,10000) | modules=random |
+|    | ${randomtvnfId} | Evaluate | random.randint(0,10000) | modules=random |
+|    | Add One SUT | ${randomsutId} | ${randomtvnfId} |
+|    | ${nasutId}= | Evaluate | ${randomsutId}+1 |
+|    | ${ret}= | Remove One SUT | ${nasutId} |
+|    | Should Contain | ${ret} | "result":"NOK" |
+|    | [Teardown] | Testvnf Teardown |
+
 | *** Keywords *** |
 | Add One SUT |
 |    | [Arguments] | ${sutId} | ${tvnfId} |
 |    | ${response}= | Send HTTP No Proxy | POST | ${TESTVNF_URL}/suts/ | -d sutId=${sutId} -d tvnfId=${tvnfId} -d deploymentInfo="${DEPLOYMENTINFO}" |
+|    | [Return] | ${response} |
+
+| Remove One SUT |
+|    | [Arguments] | ${sutId} |
+|    | ${response}= | Send HTTP No Proxy | DELETE | ${TESTVNF_URL}/suts/${sutId}/ |
 |    | [Return] | ${response} |

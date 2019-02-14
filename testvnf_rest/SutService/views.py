@@ -56,6 +56,19 @@ class RunTestcaseReq(GenericAPIView):
       response.data = {'result': 'NOK'}
     return response
 
+class ResetReq(GenericAPIView):
+  def delete(self, request, sutId, *args, **kwargs):
+    response = Response()
+    print "delete, sutId: {}".format(sutId)
+    try:
+      sut = Sut.objects.get(sutId=sutId)
+      sut.delete()
+      response.data = {'result': 'OK'}
+    except Exception as e:
+      print e.message
+      response.data = {'result': 'NOK'}
+    return response
+
 class SutVnfViewSet(ModelViewSet):
   queryset = Sut.objects.all()
   serializer_class = SutSerializer

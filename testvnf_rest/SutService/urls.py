@@ -26,6 +26,7 @@ router.register(prefix='suts', viewset=SutVnfViewSet)
 urlpatterns = [
   url(r'(?P<sutId>\w+)$', views.TestcaseReq.as_view(), name="TestEnvCapabilityReq"),
   url(r'(?P<sutId>\w+)/runTests', views.RunTestcaseReq.as_view(), name="executeTestsReq"),
+  url(r'(?P<sutId>\w+)', views.ResetReq.as_view(), name="ResetReq"),
   url(r'^$', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
 #  url(r'^', include(router.urls)),
 ]
