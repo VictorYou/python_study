@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from models import Sut
+from models import Sut, Tvnf
 
-from serializers import SutSerializer
+from serializers import SutSerializer, TvnfSerializer
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import list_route
@@ -15,7 +15,9 @@ class SetupEnvReq(GenericAPIView):
     print "hello"
     try:
       sutId = request.data['sutId']
+      tvnfId = request.data['tvnfId']
       sut = Sut.objects.create(sutId=sutId, version='0.0.1', sutStatus='A')
+      Tvnf.objects.create(tvnfId=tvnfId, tvnfStatus='A')
       response.data = {'result': 'OK'}
     except Exception as e:
       print e.message
@@ -69,6 +71,24 @@ class ResetReq(GenericAPIView):
       response.data = {'result': 'NOK'}
     return response
 
+class QueryStateReq(GenericAPIView): 
+  def get(self, request, *args, **kwargs):
+    response = Response()
+    try:
+      sut = Sut.objects.get(sutId=sutId)
+      response.data = {'result': 'OK'}
+      response.data.update({'tc list': tc_list})
+    except Exception as e:
+      response.data = {'result': 'NOK'}
+      print "exception caught"
+      print e.__doc__
+      print e.message
+    return response
+
 class SutVnfViewSet(ModelViewSet):
   queryset = Sut.objects.all()
   serializer_class = SutSerializer
+
+class TvnfViewSet(ModelViewSet):
+  queryset = Tvnf.objects.all()
+  serializer_class = TvnfSerializer
