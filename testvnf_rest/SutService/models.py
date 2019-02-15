@@ -28,26 +28,3 @@ class Sut(models.Model):
   @property
   def name(self):
     return str(self)
-
-class Tvnf(models.Model):
-  A = 'A' 
-  U = 'U' 
-  F = 'F' 
-  STATUS_CHOICES = ( 
-    (A, 'Available'),
-    (U, 'Unavailable'),
-    (F, 'Failed'),
-  )
-  tvnfId = models.CharField(max_length=20, default=generate_Id, unique=True)
-  tvnfStatus = models.CharField(max_length=15, choices=STATUS_CHOICES, default=A)
-
-  class Meta:
-    ordering = ('tvnfStatus',)
-
-  def __str__(self):
-    return "{}:{}".format(self.tvnfId, self.tvnfStatus)
-
-  @property
-  def name(self):
-    return str(self)
-    

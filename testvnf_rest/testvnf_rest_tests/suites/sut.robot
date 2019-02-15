@@ -14,6 +14,7 @@
 |    | ${randomtvnfId} | Evaluate | random.randint(0,10000) | modules=random |
 |    | ${ret}= | Add One SUT | ${randomsutId} | ${randomtvnfId} |
 |    | Should Contain | ${ret} | "result":"OK" |
+|    | Should Contain | ${ret} | "class":"SetupEnvReq" |
 |    | [Teardown] | Testvnf Teardown |
 
 | add a sut NOK |
@@ -57,6 +58,7 @@
 |    | ${ret}= | Add One SUT | ${randomsutId} | ${randomtvnfId} |
 |    | ${response}= | Send Http No Proxy | POST | ${TESTVNF_URL}/suts/${randomsutId}/runTests/ | -d testcases=[1,2,3] -d sessionId=12345 -d tvnfId=${randomtvnfId} |
 |    | Should Contain | ${response} | "result":"OK" |
+|    | Should Contain | ${response} | "class":"RunTestcaseReq" |
 |    | [Teardown] | Testvnf Teardown |
 
 | remove a sut OK |
@@ -67,6 +69,7 @@
 |    | Add One SUT | ${randomsutId} | ${randomtvnfId} |
 |    | ${ret}= | Remove One SUT | ${randomsutId} |
 |    | Should Contain | ${ret} | "result":"OK" |
+|    | Should Contain | ${ret} | "class":"ResetReq" |
 |    | [Teardown] | Testvnf Teardown |
 
 | remove a sut NOK |
@@ -78,6 +81,14 @@
 |    | ${nasutId}= | Evaluate | ${randomsutId}+1 |
 |    | ${ret}= | Remove One SUT | ${nasutId} |
 |    | Should Contain | ${ret} | "result":"NOK" |
+|    | [Teardown] | Testvnf Teardown |
+
+| query tvnf status OK |
+|    | [Documentation] | get test case from test vnf |
+|    | [Setup] | Testvnf Startup |
+|    | ${response}= | Send Http No Proxy | GET | ${TESTVNF_URL}/testvnf/v1/status |
+|    | Should Contain | ${response} | "result":"OK" |
+|    | Should Contain | ${response} | "class":"QueryStateReq" |
 |    | [Teardown] | Testvnf Teardown |
 
 | *** Keywords *** |

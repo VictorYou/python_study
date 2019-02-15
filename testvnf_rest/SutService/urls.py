@@ -14,21 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets, routers
 
 from . import views
-from .views import SutVnfViewSet, TvnfViewSet, SetupEnvReq
+from .views import SutVnfViewSet, SetupEnvReq
 
-router = routers.DefaultRouter()
-router.register(prefix='suts', viewset=SutVnfViewSet)
-router.register(prefix='testvnf', viewset=TvnfViewSet)
+#router = routers.DefaultRouter()
+#router.register(prefix='suts', viewset=SutVnfViewSet)
+#router.register(prefix='testvnf', viewset=TvnfViewSet)
 
 urlpatterns = [
   url(r'(?P<sutId>\w+)$', views.TestcaseReq.as_view(), name="TestEnvCapabilityReq"),
   url(r'(?P<sutId>\w+)/runTests', views.RunTestcaseReq.as_view(), name="executeTestsReq"),
   url(r'(?P<sutId>\w+)', views.ResetReq.as_view(), name="ResetReq"),
-  url(r'v1/status', views.QueryStateReq.as_view(), name="QueryStateReq"),
   url(r'^$', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
 #  url(r'^', include(router.urls)),
 ]
