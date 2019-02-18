@@ -24,6 +24,7 @@ from . import views
 
 urlpatterns = [
   url(r'v1/status', views.QueryStateReq.as_view(), name="QueryStateReq"),
+  url(r'v1/abortTests/(?P<sessionId>\w+)', views.AbortTestExecutionReq.as_view(), name="AbortTestExecutionReq"),
 #  url(r'^', include(router.urls)),
 ]
 

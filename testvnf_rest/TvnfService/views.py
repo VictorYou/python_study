@@ -22,6 +22,18 @@ class QueryStateReq(GenericAPIView):
     response.data.update({'class': 'QueryStateReq'})
     return response
 
+class AbortTestExecutionReq(GenericAPIView):
+  def post(self, request, sessionId, *args, **kwargs):
+    response = Response()
+    try:
+      print "sessionId: {}".format(sessionId)
+      response.data = {'result': 'OK'}
+    except Exception as e:
+      print e.message
+      response.data = {'result': 'NOK'}
+    response.data['class'] = 'AbortTestExecutionReq'
+    return response
+
 class TvnfViewSet(ModelViewSet):
   queryset = Tvnf.objects.all()
   serializer_class = TvnfSerializer

@@ -91,6 +91,15 @@
 |    | Should Contain | ${response} | "class":"QueryStateReq" |
 |    | [Teardown] | Testvnf Teardown |
 
+| abort test execution OK |
+|    | [Documentation] | get test case from test vnf |
+|    | [Setup] | Testvnf Startup |
+|    | ${randomsessionId} | Evaluate | random.randint(0,10000) | modules=random |
+|    | ${response}= | Send Http No Proxy | POST | ${TESTVNF_URL}/testvnf/v1/abortTests/${randomsessionId}/ |
+|    | Should Contain | ${response} | "result":"OK" |
+|    | Should Contain | ${response} | "class":"AbortTestExecutionReq" |
+|    | [Teardown] | Testvnf Teardown |
+
 | *** Keywords *** |
 | Add One SUT |
 |    | [Arguments] | ${sutId} | ${tvnfId} |
