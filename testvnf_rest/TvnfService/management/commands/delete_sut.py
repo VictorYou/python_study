@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from SutService.models import Sut
+from TvnfService.models import Sut
 
 class Command(BaseCommand):
   help = "remove suts in database"
