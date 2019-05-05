@@ -9,6 +9,7 @@
 | *** Test Cases *** |
 | add a sut OK |
 |    | [Documentation] | get test case from test vnf |
+|    | [Tags] | ADD |
 |    | [Setup] | Testvnf Startup |
 |    | ${randomsutId} | Evaluate | random.randint(0,10000) | modules=random |
 |    | ${randomtvnfId} | Evaluate | random.randint(0,10000) | modules=random |
@@ -103,6 +104,7 @@
 | *** Keywords *** |
 | Add One SUT |
 |    | [Arguments] | ${sutId} | ${tvnfId} |
+|    | [Tags] | ADD |
 |    | ${response}= | Send HTTP No Proxy | POST | ${TESTVNF_URL}/suts/ | -d sutId=${sutId} -d tvnfId=${tvnfId} -d deploymentInfo="${DEPLOYMENTINFO}" |
 |    | [Return] | ${response} |
 

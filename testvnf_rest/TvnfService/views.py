@@ -9,6 +9,11 @@ from rest_framework.decorators import list_route
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from django.core.files.storage import FileSystemStorage
+from rest_framework.views import APIView
+
+import json
+
 class QueryStateReq(GenericAPIView): 
   def get(self, request, *args, **kwargs):
     response = Response()
@@ -105,6 +110,59 @@ class ResetReq(GenericAPIView):
       print e.message
       response.data = {'result': 'NOK'}
     response.data.update({'class': 'ResetReq'})
+    return response
+
+#class ReportTestResultReq(GenericAPIView):
+#  def post(self, request, sessionId, *args, **kwargs):
+#    response = Response()
+#    try:
+#      logfile = request.FILES['logfile']
+#      fs = FileSystemStorage()
+#      filename = fs.save('logfile', logfile)
+#
+#      TestResults = json.loads(request.data.get('TestResults', '[]'))
+#      if 'info' in TestResults:
+#          testResult = TestResults['info']
+#          testResults = [testResult]
+#      else:  # MultiTestResult, this is not yet implemented
+#          testResults = []
+#    except KeyError as e:
+#      response.status_code = status.HTTP_400_BAD_REQUEST
+#      response.data = 'Missing {}'.format(e)
+#    return response
+#    for testResult in testResults:
+#      receivedResult = testResult['result']
+#      print("test result: {}".format(testResult['result']))
+#    return response  
+
+class ReportTestResultReq(APIView):
+  def put(self, request, sessionId, *args, **kwargs):
+    ''' can be tested with:
+        curl --noproxy '*' -X PUT -F logfile=@/home/viyou/github/python_study/testvnf_rest/manage.py -F TestResults="{\"info\":{\"testCaseId\": \"Create MR\", \"result\": \"pass\"}}" http://127.0.0.1:8000/testvnf/v1/testResults/12345/
+    '''
+    response = Response()
+    try:
+      print "sessionId: {}".format(sessionId)
+      logfile = request.FILES['logfile']
+      fs = FileSystemStorage()
+      print("saving logfile filename")
+      filename = fs.save('logfile', logfile)
+      print("filename: {}".format(filename))
+      TestResults = json.loads(request.data.get('TestResults', '[]'))
+      if 'info' in TestResults:
+        testResult = TestResults['info']
+        testResults = [testResult]
+      else:  # MultiTestResult, this is not yet implemented
+        testResults = []
+      print("testResults: {}".format(testResults))  
+      for testResult in testResults:
+        receivedResult = testResult['result']
+        print("test result: {}".format(testResult['result']))
+      response.data = {'result': 'OK'}
+    except Exception as e:
+      print("exception caught: {}, {}".format(e.message, e.__doc__))
+      response.data = {'result': 'NOK'}
+    response.data['class'] = 'AbortTestExecutionReq'
     return response
 
 class SutVnfViewSet(ModelViewSet):

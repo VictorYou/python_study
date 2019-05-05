@@ -29,6 +29,7 @@ urlpatterns = [
   url(r'suts', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
   url(r'status', views.QueryStateReq.as_view(), name="QueryStateReq"),
   url(r'abortTests/(?P<sessionId>\w+)', views.AbortTestExecutionReq.as_view(), name="AbortTestExecutionReq"),
+  url(r'testResults/(?P<sessionId>[\w\-]+)$', views.ReportTestResultReq.as_view(), name="ReportTestResultReq"),
 #  url(r'^', include(router.urls)),
 ]
 
