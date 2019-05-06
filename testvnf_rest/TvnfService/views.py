@@ -29,6 +29,9 @@ class QueryStateReq(GenericAPIView):
 
 class AbortTestExecutionReq(GenericAPIView):
   def post(self, request, sessionId, *args, **kwargs):
+    ''' can test in this way:
+    curl --noproxy '*' -X POST http://127.0.0.1:8000/testvnf/v1/abortTests/123456
+    '''
     response = Response()
     try:
       print "sessionId: {}".format(sessionId)
@@ -45,6 +48,9 @@ class TvnfViewSet(ModelViewSet):
 
 class SetupEnvReq(GenericAPIView):
   def post(self, request, *args, **kwargs):
+    ''' can test in this way:
+    curl --noproxy '*' -X POST -d tvnfId=1234 -d sutId=1234 -d deploymentInfo='info' http://127.0.0.1:8000/testvnf/v1/suts
+    '''
     response = Response()
     print "hello"
     for sut in Sut.objects.all():
@@ -112,28 +118,18 @@ class ResetReq(GenericAPIView):
     response.data.update({'class': 'ResetReq'})
     return response
 
-#class ReportTestResultReq(GenericAPIView):
-#  def post(self, request, sessionId, *args, **kwargs):
-#    response = Response()
-#    try:
-#      logfile = request.FILES['logfile']
-#      fs = FileSystemStorage()
-#      filename = fs.save('logfile', logfile)
-#
-#      TestResults = json.loads(request.data.get('TestResults', '[]'))
-#      if 'info' in TestResults:
-#          testResult = TestResults['info']
-#          testResults = [testResult]
-#      else:  # MultiTestResult, this is not yet implemented
-#          testResults = []
-#    except KeyError as e:
-#      response.status_code = status.HTTP_400_BAD_REQUEST
-#      response.data = 'Missing {}'.format(e)
-#    return response
-#    for testResult in testResults:
-#      receivedResult = testResult['result']
-#      print("test result: {}".format(testResult['result']))
-#    return response  
+class TestResetReq(GenericAPIView):
+  def delete(self, request, *args, **kwargs):
+    response = Response()
+    try:
+      sut = Sut.objects.get(sutId=sutId)
+      sut.delete()
+      response.data = {'result': 'OK'}
+    except Exception as e:
+      print e.message
+      response.data = {'result': 'NOK'}
+    response.data.update({'class': 'ResetReq'})
+    return response
 
 class ReportTestResultReq(APIView):
   def put(self, request, sessionId, *args, **kwargs):
@@ -162,7 +158,7 @@ class ReportTestResultReq(APIView):
     except Exception as e:
       print("exception caught: {}, {}".format(e.message, e.__doc__))
       response.data = {'result': 'NOK'}
-    response.data['class'] = 'AbortTestExecutionReq'
+    response.data['class'] = 'ReportTestResultReq'
     return response
 
 class SutVnfViewSet(ModelViewSet):

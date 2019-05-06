@@ -26,6 +26,7 @@ urlpatterns = [
   url(r'suts/(?P<sutId>\w+)$', views.TestcaseReq.as_view(), name="TestEnvCapabilityReq"),
   url(r'suts/(?P<sutId>\w+)/runTests', views.RunTestcaseReq.as_view(), name="executeTestsReq"),
   url(r'suts/(?P<sutId>\w+)', views.ResetReq.as_view(), name="ResetReq"),
+  url(r'suts/testdelete', views.TestResetReq.as_view(), name="TestResetReq"),
   url(r'suts', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
   url(r'status', views.QueryStateReq.as_view(), name="QueryStateReq"),
   url(r'abortTests/(?P<sessionId>\w+)', views.AbortTestExecutionReq.as_view(), name="AbortTestExecutionReq"),
