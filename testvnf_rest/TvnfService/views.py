@@ -9,6 +9,11 @@ from rest_framework.decorators import list_route
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from django.core.files.storage import FileSystemStorage
+from rest_framework.views import APIView
+
+import json
+
 class QueryStateReq(GenericAPIView): 
   def get(self, request, *args, **kwargs):
     response = Response()
@@ -24,6 +29,9 @@ class QueryStateReq(GenericAPIView):
 
 class AbortTestExecutionReq(GenericAPIView):
   def post(self, request, sessionId, *args, **kwargs):
+    ''' can test in this way:
+    curl --noproxy '*' -X POST http://127.0.0.1:8000/testvnf/v1/abortTests/123456
+    '''
     response = Response()
     try:
       print "sessionId: {}".format(sessionId)
@@ -40,6 +48,9 @@ class TvnfViewSet(ModelViewSet):
 
 class SetupEnvReq(GenericAPIView):
   def post(self, request, *args, **kwargs):
+    ''' can test in this way:
+    curl --noproxy '*' -X POST -d tvnfId=1234 -d sutId=1234 -d deploymentInfo='info' http://127.0.0.1:8000/testvnf/v1/suts
+    '''
     response = Response()
     print "hello"
     for sut in Sut.objects.all():
@@ -105,6 +116,49 @@ class ResetReq(GenericAPIView):
       print e.message
       response.data = {'result': 'NOK'}
     response.data.update({'class': 'ResetReq'})
+    return response
+
+class TestResetReq(GenericAPIView):
+  def delete(self, request, *args, **kwargs):
+    response = Response()
+    try:
+      sut = Sut.objects.get(sutId=sutId)
+      sut.delete()
+      response.data = {'result': 'OK'}
+    except Exception as e:
+      print e.message
+      response.data = {'result': 'NOK'}
+    response.data.update({'class': 'ResetReq'})
+    return response
+
+class ReportTestResultReq(APIView):
+  def put(self, request, sessionId, *args, **kwargs):
+    ''' can be tested with:
+        curl --noproxy '*' -X PUT -F logfile=@/home/viyou/github/python_study/testvnf_rest/manage.py -F TestResults="{\"info\":{\"testCaseId\": \"Create MR\", \"result\": \"pass\"}}" http://127.0.0.1:8000/testvnf/v1/testResults/12345/
+    '''
+    response = Response()
+    try:
+      print "sessionId: {}".format(sessionId)
+      logfile = request.FILES['logfile']
+      fs = FileSystemStorage()
+      print("saving logfile filename")
+      filename = fs.save('logfile', logfile)
+      print("filename: {}".format(filename))
+      TestResults = json.loads(request.data.get('TestResults', '[]'))
+      if 'info' in TestResults:
+        testResult = TestResults['info']
+        testResults = [testResult]
+      else:  # MultiTestResult, this is not yet implemented
+        testResults = []
+      print("testResults: {}".format(testResults))  
+      for testResult in testResults:
+        receivedResult = testResult['result']
+        print("test result: {}".format(testResult['result']))
+      response.data = {'result': 'OK'}
+    except Exception as e:
+      print("exception caught: {}, {}".format(e.message, e.__doc__))
+      response.data = {'result': 'NOK'}
+    response.data['class'] = 'ReportTestResultReq'
     return response
 
 class SutVnfViewSet(ModelViewSet):
