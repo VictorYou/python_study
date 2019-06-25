@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, CharField
-from models import Tvnf, Sut
+from .models import Tvnf, Sut
 
 class TvnfSerializer(ModelSerializer):
   class Meta:

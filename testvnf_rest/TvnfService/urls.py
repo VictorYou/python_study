@@ -15,18 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from rest_framework import serializers, viewsets, routers
+from rest_framework.routers import SimpleRouter
 
 from . import views
 
-#router = routers.DefaultRouter()
-#router.register(prefix='suts', viewset=SutVnfViewSet)
+router = SimpleRouter(trailing_slash=False)
+router.register(prefix='suts', viewset=views.TestResetReq, basename='suts')
 #router.register(prefix='testvnf', viewset=TvnfViewSet)
 
 urlpatterns = [ 
+  url(r'^', include(router.urls)),
   url(r'suts/(?P<sutId>\w+)$', views.TestcaseReq.as_view(), name="TestEnvCapabilityReq"),
   url(r'suts/(?P<sutId>\w+)/runTests', views.RunTestcaseReq.as_view(), name="executeTestsReq"),
   url(r'suts/(?P<sutId>\w+)', views.ResetReq.as_view(), name="ResetReq"),
-  url(r'suts/testdelete', views.TestResetReq.as_view(), name="TestResetReq"),
+#  url(r'suts/testdelete', views.TestResetReq.as_view(), name="TestResetReq"),
   url(r'suts', views.SetupEnvReq.as_view(), name="SetupEnvReq"),
   url(r'status', views.QueryStateReq.as_view(), name="QueryStateReq"),
   url(r'abortTests/(?P<sessionId>\w+)', views.AbortTestExecutionReq.as_view(), name="AbortTestExecutionReq"),

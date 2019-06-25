@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from models import Tvnf, Sut 
+from .models import Tvnf, Sut 
 
-from serializers import TvnfSerializer, SutSerializer
+from .serializers import TvnfSerializer, SutSerializer
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import list_route
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework import viewsets
 
 from django.core.files.storage import FileSystemStorage
 from rest_framework.views import APIView
@@ -21,23 +22,25 @@ class QueryStateReq(GenericAPIView):
       response.data = {'result': 'OK'}
     except Exception as e:
       response.data = {'result': 'NOK'}
-      print "exception caught"
-      print e.__doc__
-      print e.message
+      print("exception caught: {e.__doc__}")
     response.data.update({'class': 'QueryStateReq'})
     return response
 
 class AbortTestExecutionReq(GenericAPIView):
   def post(self, request, sessionId, *args, **kwargs):
     ''' can test in this way:
+    curl -undap:Admin123 --noproxy '*' -X POST http://127.0.0.1:8000/testvnf/v1/abortTests/123456
     curl --noproxy '*' -X POST http://127.0.0.1:8000/testvnf/v1/abortTests/123456
+    curl --noproxy '*' --cacert ssl/cert -X POST https://127.0.0.1:443/testvnf/v1/abortTests/123456
+    curl --noproxy '*' --cacert cert -X POST https://10.55.76.99:443/testvnf/v1/abortTests/123456
+    curl -undap:Admin123 --cacert ssl/cert --noproxy '*' -X POST https://127.0.0.1:443/testvnf/v1/abortTests/123456
     '''
     response = Response()
     try:
-      print "sessionId: {}".format(sessionId)
+      print("sessionId: {}".format(sessionId))
       response.data = {'result': 'OK'}
     except Exception as e:
-      print e.message
+      print(e.__doc__)
       response.data = {'result': 'NOK'}
     response.data['class'] = 'AbortTestExecutionReq'
     return response
@@ -52,10 +55,10 @@ class SetupEnvReq(GenericAPIView):
     curl --noproxy '*' -X POST -d tvnfId=1234 -d sutId=1234 -d deploymentInfo='info' http://127.0.0.1:8000/testvnf/v1/suts
     '''
     response = Response()
-    print "hello"
+    print("hello")
     for sut in Sut.objects.all():
-      print "sut id: {}".format(sut.sutId)
-      print "pk: {}".format(sut.pk)
+      print("sut id: {}".format(sut.sutId))
+      print("pk: {}".format(sut.pk))
     try:
       sutId = request.data['sutId']
       tvnfId = request.data['tvnfId']
@@ -63,7 +66,7 @@ class SetupEnvReq(GenericAPIView):
       Tvnf.objects.create(tvnfId=tvnfId, tvnfStatus='A')
       response.data = {'result': 'OK'}
     except Exception as e:
-      print e.message
+      print(e.__doc__)
       response.data = {'result': 'NOK'}
     response.data['class'] = 'SetupEnvReq'
     return response
@@ -73,33 +76,31 @@ class TestcaseReq(GenericAPIView):
     response = Response()
     sutlist = Sut.objects.all()
     tc_list = [1, 2, 3]
-    print "arg sutId: {}".format(sutId)
+    print("arg sutId: {}".format(sutId))
     try:
       for sut in Sut.objects.all():
-        print "sut id: {}".format(sut.sutId)
-        print "pk: {}".format(sut.pk)
+        print("sut id: {}".format(sut.sutId))
+        print("pk: {}".format(sut.pk))
       sut = Sut.objects.get(sutId=sutId)
       response.data = {'result': 'OK'}
       response.data.update({'tc list': [1, 2, 3]})
     except Exception as e:
       response.data = {'result': 'NOK'}
-      print "exception caught"
-      print e.__doc__
-      print e.message
+      print(f"exception caught: {e.__doc__}")
     response.data['class'] = 'TestcaseReq'
     return response
 
 class RunTestcaseReq(GenericAPIView):
   def post(self, request, sutId, *args, **kwargs):
     response = Response()
-    print "hello, run sutId: {}".format(sutId)
+    print("hello, run sutId: {}".format(sutId))
     try:
       testcases = request.data['testcases']
       sessionId = request.data['sessionId']
       tvnfId = request.data['tvnfId']
       response.data = {'result': 'OK'}
     except Exception as e:
-      print e.message
+      print(e.__doc__)
       response.data = {'result': 'NOK'}
     response.data.update({'class': 'RunTestcaseReq'})
     return response
@@ -107,18 +108,18 @@ class RunTestcaseReq(GenericAPIView):
 class ResetReq(GenericAPIView):
   def delete(self, request, sutId, *args, **kwargs):
     response = Response()
-    print "delete, sutId: {}".format(sutId)
+    print("delete, sutId: {}".format(sutId))
     try:
       sut = Sut.objects.get(sutId=sutId)
       sut.delete()
       response.data = {'result': 'OK'}
     except Exception as e:
-      print e.message
+      print(e.__doc__)
       response.data = {'result': 'NOK'}
     response.data.update({'class': 'ResetReq'})
     return response
 
-class TestResetReq(GenericAPIView):
+class TestResetReq(viewsets.GenericViewSet):
   def delete(self, request, *args, **kwargs):
     response = Response()
     try:
@@ -126,7 +127,7 @@ class TestResetReq(GenericAPIView):
       sut.delete()
       response.data = {'result': 'OK'}
     except Exception as e:
-      print e.message
+      print(e.__doc__)
       response.data = {'result': 'NOK'}
     response.data.update({'class': 'ResetReq'})
     return response
@@ -138,7 +139,7 @@ class ReportTestResultReq(APIView):
     '''
     response = Response()
     try:
-      print "sessionId: {}".format(sessionId)
+      print("sessionId: {}".format(sessionId))
       logfile = request.FILES['logfile']
       fs = FileSystemStorage()
       print("saving logfile filename")
@@ -156,7 +157,7 @@ class ReportTestResultReq(APIView):
         print("test result: {}".format(testResult['result']))
       response.data = {'result': 'OK'}
     except Exception as e:
-      print("exception caught: {}, {}".format(e.message, e.__doc__))
+      print("exception caught: {}".format(e.__doc__))
       response.data = {'result': 'NOK'}
     response.data['class'] = 'ReportTestResultReq'
     return response
