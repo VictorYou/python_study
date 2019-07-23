@@ -2,9 +2,12 @@
 | Library        | ../libraries/requests_wrapper.py |
 | Variables      | ../libraries/dynamic_vars.py |
 | Library        | ../libraries/Testvnf_keywords.py |
+| Library        | Collections |
+| Variables      | ../libraries/vars.py |
 
 | *** Variables *** |
 | ${DEPLOYMENTINFO} | add a sut |
+| @{mylist}      | 'viyou' | 'lynn' | 'ls' |
 
 | *** Test Cases *** |
 | add a sut OK |
@@ -101,6 +104,18 @@
 |    | Should Contain | ${response} | "class":"AbortTestExecutionReq" |
 |    | [Teardown] | Testvnf Teardown |
 
+| get list |
+|    | ${list}= | Setup NEAC for NE Type |
+|    | ${index}= | Get Index From List | ${list} | 'nemuuser' |
+|    | #${mylistindex}= | Get Index From List | ${mylist} | 'lynn' |
+|    | ${listlength}= | Get Length | ${list} |
+|    | Check Existing Credentials Or Create New | ${list} |
+|    | #${mylistlength}= | Get Length | ${mylist} |
+|    | #${password_ength}= | Get Length | ${PASSWORDS} |
+|    | #${newlist}= | Set Variable | 'viyou' | 'lynn' |
+|    | #${newlistindex}= | Get Index From List | ${newlist} | 'lynn' |
+|    | #${newlistlength}= | Get Length | ${newlist} |
+
 | *** Keywords *** |
 | Add One SUT |
 |    | [Arguments] | ${sutId} | ${tvnfId} |
@@ -112,3 +127,14 @@
 |    | [Arguments] | ${sutId} |
 |    | ${response}= | Send HTTP No Proxy | DELETE | ${TESTVNF_URL}/suts/${sutId}/ |
 |    | [Return] | ${response} |
+
+| Get Service User Types |
+|    | Return from keyword if | True | @{PASSWORDS} |
+
+| Setup NEAC For NE Type |
+|    | ${service_types}= | Get Service User Types |
+|    | Return from keyword if | True | ${service_types} |
+
+| Check Existing Credentials Or Create New |
+|    | [Arguments] | ${list} |
+|    | ${length}= | Get Length | ${list} |
