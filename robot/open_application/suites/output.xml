@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot rpa="false" generated="20190725 09:55:52.890" generator="Robot 3.1.2 (Python 2.7.15rc1 on linux2)">
+<suite source="/home/viyou/github/python_study/robot/open_application/suites" id="s1" name="Suites">
+<suite source="/home/viyou/github/python_study/robot/open_application/suites/sut.robot" id="s1-s1" name="Sut">
+<test id="s1-s1-t1" name="try browser">
+<kw name="Run Keyword And Ignore Error" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Open Browser</arg>
+<arg>Firefox</arg>
+</arguments>
+<assign>
+<var>${status}</var>
+<var>${ret}</var>
+</assign>
+<kw name="Open Browser" library="SeleniumLibrary">
+<doc>Opens a new browser instance to the given ``url``.</doc>
+<arguments>
+<arg>Firefox</arg>
+</arguments>
+<msg timestamp="20190725 09:55:53.987" level="INFO">Opening browser 'firefox' to base url 'Firefox'.</msg>
+<kw name="Capture Page Screenshot" library="SeleniumLibrary">
+<doc>Takes screenshot of the current page and embeds it into log file.</doc>
+<msg timestamp="20190725 09:56:05.107" html="yes" level="INFO">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-20.png"&gt;&lt;img src="selenium-screenshot-20.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" endtime="20190725 09:56:05.107" starttime="20190725 09:56:05.050"></status>
+</kw>
+<msg timestamp="20190725 09:56:05.119" level="FAIL">InvalidArgumentException: Message: Malformed URL: Firefox is not a valid URL.
+</msg>
+<status status="FAIL" endtime="20190725 09:56:05.119" starttime="20190725 09:55:53.986"></status>
+</kw>
+<msg timestamp="20190725 09:56:05.119" level="INFO">${status} = FAIL</msg>
+<msg timestamp="20190725 09:56:05.119" level="INFO">${ret} = InvalidArgumentException: Message: Malformed URL: Firefox is not a valid URL.
+</msg>
+<status status="PASS" endtime="20190725 09:56:05.119" starttime="20190725 09:55:53.986"></status>
+</kw>
+<kw name="Run Keyword And Return Status" library="BuiltIn">
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<arguments>
+<arg>Go To</arg>
+<arg>https://10.157.169.150</arg>
+</arguments>
+<assign>
+<var>${status}</var>
+</assign>
+<kw name="Go To" library="SeleniumLibrary">
+<doc>Navigates the active browser instance to the provided ``url``.</doc>
+<arguments>
+<arg>https://10.157.169.150</arg>
+</arguments>
+<msg timestamp="20190725 09:56:05.121" level="INFO">Opening url 'https://10.157.169.150'</msg>
+<status status="PASS" endtime="20190725 09:56:11.299" starttime="20190725 09:56:05.121"></status>
+</kw>
+<msg timestamp="20190725 09:56:11.299" level="INFO">${status} = True</msg>
+<status status="PASS" endtime="20190725 09:56:11.299" starttime="20190725 09:56:05.120"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>applicationLoginUsername</arg>
+<arg>5</arg>
+</arguments>
+<status status="PASS" endtime="20190725 09:56:11.538" starttime="20190725 09:56:11.299"></status>
+</kw>
+<kw name="Clear Element Text" library="SeleniumLibrary">
+<doc>Clears the value of text entry element identified by ``locator``.</doc>
+<arguments>
+<arg>applicationLoginUsername</arg>
+</arguments>
+<status status="PASS" endtime="20190725 09:56:11.620" starttime="20190725 09:56:11.540"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>applicationLoginUsername</arg>
+<arg>admin</arg>
+</arguments>
+<msg timestamp="20190725 09:56:11.620" level="INFO">Typing text 'admin' into text field 'applicationLoginUsername'.</msg>
+<status status="PASS" endtime="20190725 09:56:11.778" starttime="20190725 09:56:11.620"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>applicationLoginPassword</arg>
+<arg>5</arg>
+</arguments>
+<status status="PASS" endtime="20190725 09:56:11.891" starttime="20190725 09:56:11.779"></status>
+</kw>
+<kw name="Clear Element Text" library="SeleniumLibrary">
+<doc>Clears the value of text entry element identified by ``locator``.</doc>
+<arguments>
+<arg>applicationLoginPassword</arg>
+</arguments>
+<status status="PASS" endtime="20190725 09:56:11.967" starttime="20190725 09:56:11.891"></status>
+</kw>
+<kw name="Input Text" library="SeleniumLibrary">
+<doc>Types the given ``text`` into text field identified by ``locator``.</doc>
+<arguments>
+<arg>applicationLoginPassword</arg>
+<arg>Admin123</arg>
+</arguments>
+<msg timestamp="20190725 09:56:11.968" level="INFO">Typing text 'Admin123' into text field 'applicationLoginPassword'.</msg>
+<status status="PASS" endtime="20190725 09:56:12.120" starttime="20190725 09:56:11.968"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>xpath=//*[@id="login"]</arg>
+<arg>5</arg>
+</arguments>
+<status status="PASS" endtime="20190725 09:56:12.423" starttime="20190725 09:56:12.120"></status>
+</kw>
+<kw name="Run Keyword And Return Status" library="BuiltIn">
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<arguments>
+<arg>Click Button</arg>
+<arg>login</arg>
+</arguments>
+<assign>
+<var>${status}</var>
+</assign>
+<kw name="Click Button" library="SeleniumLibrary">
+<doc>Clicks button identified by ``locator``.</doc>
+<arguments>
+<arg>login</arg>
+</arguments>
+<msg timestamp="20190725 09:56:12.425" level="INFO">Clicking button 'login'.</msg>
+<status status="PASS" endtime="20190725 09:56:12.812" starttime="20190725 09:56:12.424"></status>
+</kw>
+<msg timestamp="20190725 09:56:12.812" level="INFO">${status} = True</msg>
+<status status="PASS" endtime="20190725 09:56:12.812" starttime="20190725 09:56:12.424"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>xpath://img[@alt='Test Cases']</arg>
+</arguments>
+<assign>
+<var>${element}</var>
+</assign>
+<msg timestamp="20190725 09:56:12.813" level="INFO">${element} = xpath://img[@alt='Test Cases']</msg>
+<status status="PASS" endtime="20190725 09:56:12.813" starttime="20190725 09:56:12.812"></status>
+</kw>
+<kw name="Wait Until Element Is Visible" library="SeleniumLibrary">
+<doc>Waits until element ``locator`` is visible.</doc>
+<arguments>
+<arg>${element}</arg>
+<arg>10</arg>
+</arguments>
+<status status="PASS" endtime="20190725 09:56:14.022" starttime="20190725 09:56:12.814"></status>
+</kw>
+<kw name="Run Keyword And Return Status" library="BuiltIn">
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<arguments>
+<arg>Click Image</arg>
+<arg>${element}</arg>
+</arguments>
+<assign>
+<var>${status}</var>
+</assign>
+<kw name="Click Image" library="SeleniumLibrary">
+<doc>Clicks an image identified by ``locator``.</doc>
+<arguments>
+<arg>${element}</arg>
+</arguments>
+<msg timestamp="20190725 09:56:14.031" level="INFO">Clicking image 'xpath://img[@alt='Test Cases']'.</msg>
+<status status="PASS" endtime="20190725 09:56:14.989" starttime="20190725 09:56:14.029"></status>
+</kw>
+<msg timestamp="20190725 09:56:14.990" level="INFO">${status} = True</msg>
+<status status="PASS" endtime="20190725 09:56:14.990" starttime="20190725 09:56:14.025"></status>
+</kw>
+<tags>
+<tag>TEST</tag>
+</tags>
+<status status="PASS" endtime="20190725 09:56:14.990" critical="yes" starttime="20190725 09:55:53.983"></status>
+</test>
+<status status="PASS" endtime="20190725 09:56:14.992" starttime="20190725 09:55:52.946"></status>
+</suite>
+<status status="PASS" endtime="20190725 09:56:15.034" starttime="20190725 09:55:52.902"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="1">Critical Tests</stat>
+<stat fail="0" pass="1">All Tests</stat>
+</total>
+<tag>
+<stat fail="0" pass="1">TEST</stat>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="Suites" pass="1">Suites</stat>
+<stat fail="0" id="s1-s1" name="Sut" pass="1">Suites.Sut</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

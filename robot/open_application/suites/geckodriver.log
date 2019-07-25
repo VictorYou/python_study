@@ -1,0 +1,57 @@
+1563950383314	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.CXb96Ivorp5J"
+1563950405983	Marionette	INFO	Listening on port 34207
+1563950406127	Marionette	WARN	TLS certificate errors will be ignored for this session
+1563950608205	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.guXQ8JC0DCOI"
+1563950719036	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.7jUaovS7iDIU"
+1563950727765	Marionette	INFO	Listening on port 35345
+1563950727825	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:15902): dconf-WARNING **: 14:45:36.674: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563950943493	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.QWaPynSyElvT"
+1563950950461	Marionette	INFO	Listening on port 37175
+1563950950558	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:16051): dconf-WARNING **: 14:49:19.305: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563951184210	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.SzEHH8c2nxqM"
+1563951192076	Marionette	INFO	Listening on port 44429
+1563951192192	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:16230): dconf-WARNING **: 14:53:19.129: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563951417368	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.dZe7aaToIuDu"
+1563951423752	Marionette	INFO	Listening on port 38565
+1563951423836	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:16406): dconf-WARNING **: 14:57:09.820: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563952065313	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.HIlBmeaLbFCu"
+1563952072053	Marionette	INFO	Listening on port 33225
+1563952072091	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:16903): dconf-WARNING **: 15:07:58.686: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563954108891	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.WK1I4RgYqB8d"
+1563954116028	Marionette	INFO	Listening on port 45069
+1563954116092	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:17212): dconf-WARNING **: 15:42:03.329: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563954577166	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.U45TfLaTtSUJ"
+1563954583278	Marionette	INFO	Listening on port 44085
+1563954583319	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:17430): dconf-WARNING **: 15:49:49.448: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1563954864230	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.55lhTxcNNeU1"
+1563954870280	Marionette	INFO	Listening on port 35443
+1563954870420	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:17591): dconf-WARNING **: 15:54:38.256: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+1564019626142	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.VJAI0x9LI3BJ"
+1564019710513	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.85IRVSNs85XX"
+1564019719449	Marionette	INFO	Listening on port 42877
+1564019719773	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:27123): dconf-WARNING **: 09:55:28.047: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
+[Parent 27005, Gecko_IOThread] WARNING: pipe error (74): Connection reset by peer: file /build/firefox-oscv9o/firefox-61.0.1+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 353
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1564019755100	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.ADb0umZerpfs"
+1564019763903	Marionette	INFO	Listening on port 38423
+1564019764228	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox/firefox:27302): dconf-WARNING **: 09:56:12.339: Unable to open /var/lib/snapd/desktop/dconf/profile/user: Permission denied
