@@ -11,6 +11,13 @@
 | Setup NEAC for NE Type |
 |    | [Return] | @{PASSWORDS} |
 
+| Check and Click |
+|    | [Arguments] | ${type} | ${element} | ${wait}=False |
+|    | Wait Until Element Is Visible | ${element} | 10 |
+|    | ${status}= | Run Keyword and Return Status | Click ${type} | ${element} |
+|    | Run Keyword if | ${status} != True | Log | Fail to click ${element} |
+|    | Run Keyword If | ${wait} == True | Wait Until Page Does Not Contain Element | ${element} | 10 |
+
 | Check and Click Button |
 |    | [Arguments] | ${element} | ${wait}=False |
 |    | Check and Click | Button | ${element} | ${wait} |
@@ -27,23 +34,19 @@
 |    | [Arguments] | ${element} | ${wait}=False |
 |    | Check and Click | Link | ${element} |
 
-| Check and Click |
-|    | [Arguments] | ${type} | ${element} | ${wait}=False |
+| Check and Select List Value |
+|    | [Arguments] | ${element} | ${value} |
 |    | Wait Until Element Is Visible | ${element} | 10 |
-|    | ${status}= | Run Keyword and Return Status | Click ${type} | ${element} |
-|    | Run Keyword if | ${status} != True | Log | Fail to click ${element} |
-|    | Run Keyword If | ${wait} == True | Wait Until Page Does Not Contain Element | ${element} | 10 |
+|    | Log | ${element} |
+|    | ${list}= | Get List Items | ${element}/.. |
+|    | List Should Contain Value | ${list} | ${value} |
+|    | Select From List By Label | ${element}/.. | ${value} |
 
 | Check and Input Text |
 |    | [Arguments] | ${element} | ${text} |
 |    | Wait Until Element Is Visible | ${element} | 5 |
 |    | Clear Element Text | ${element} |
 |    | Input Text | ${element} | ${text} |
-
-| Check List Value |
-|    | [Arguments] | ${element} | ${value} |
-|    | ${list}= | Get List Items | ${element} |
-|    | List Should Contain Value | ${list} | ${value} |
 
 | Create TVNF Object |
 |    | Login NDAP |
@@ -76,3 +79,9 @@
 
 | Logout NDAP |
 |    | Close Browser |
+
+| Scroll To Element |
+|    | [Arguments] | ${element} |
+|    | ${x}= | Get Horizontal Position | ${element} |
+|    | ${y}= | Get Vertical Position | ${element} |
+|    | Execute Javascript | window.scrollTo(${x}, ${y}) |
