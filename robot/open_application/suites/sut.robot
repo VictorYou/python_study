@@ -1,6 +1,5 @@
 | *** Settings *** |
 | Suite Setup    | Login NDAP |
-| Suite Teardown | Logout NDAP |
 | Library        | ../libraries/requests_wrapper.py |
 | Variables      | ../libraries/dynamic_vars.py |
 | Library        | ../libraries/Testvnf_keywords.py |
@@ -15,11 +14,16 @@
 
 | *** Test Cases *** |
 | Test |
-|    | Create TVNF Workflow |
 |    | comment | Create TVNF Object |
+|    | comment | Create TVNF Workflow | ${TVNF_DEPLOYMENT_OPTIONS} | ${TVNF_DEPLOYMENT_NAME} |
+|    | Modify Workflow Parameter | ${TVNF_DEPLOYMENT_NAME} | ${WORKFLOW_NAME} | ${PARAMETER_TVNF_NAME_VALUE} | ${TVNF_DEPLOYMENT_NAME} |
+|    | Start Workflow | ${TVNF_DEPLOYMENT_NAME} | ${WORKFLOW_NAME} |
 |    | comment | Delete TVNF Object |
 
 | *** Keywords *** |
+| Click Dashboard |
+|    | Check and Click Link | xpath://a[@href="/dashboard-view"] |
+
 | Create TVNF Object |
 |    | Check and Click Image | xpath://img[@alt='Test Cases'] |
 |    | Check and Click Link | xpath://a[@class='nav-link' and text()='TVNF Settings'] |
@@ -31,6 +35,20 @@
 |    | Check and Click Button | xpath://button[contains(text(), 'Save TVNF')] | True |
 |    | [Teardown] | Click Dashboard |
 
+| Create TVNF Workflow |
+|    | [Arguments] | ${deployment_options} | ${workflow_name} |
+|    | Check and Click Image | xpath://img[@alt='Products'] |
+|    | ${parent_node}= | Set Variable | xpath://h6[contains(text(),'Select a product')]/..// |
+|    | : FOR | ${i} | IN RANGE | 0 | 3 |
+|    |    | ${index}= | Evaluate | ${i}+1 |
+|    |    | Check and Select List Value | ${parent_node}generic-dropdown[${index}]/select/option | ${deployment_options}[${i}] |
+|    | Check and Input Text | ${parent_node}input[@type='text'] | ${workflow_name} |
+|    | ${create_button}= | Set Variable | ${parent_node}button[contains(text(),'Create Deployment Instance')] |
+|    | Wait Until Element Is Enabled | ${create_button} |
+|    | Scroll To Element | ${create_button} |
+|    | Check and Click Button | ${create_button} |
+|    | [Teardown] | Click Dashboard |
+
 | Delete TVNF Object |
 |    | Check and Click Image | xpath://img[@alt='Test Cases'] |
 |    | Check and Click Link | xpath://a[@class='nav-link' and text()='TVNF Settings'] |
@@ -38,18 +56,6 @@
 |    | Check and Click Element | xpath://h5[contains(text(),'fastpass_tvnf_test')]//a[@data-target='#deleteModal'] |
 |    | Check and Click Button | xpath://div[@id="deleteModal"]//button[contains(text(),'Yes, Proceed')] |
 |    | [Teardown] | Click Dashboard |
-
-| Create TVNF Workflow |
-|    | Check and Click Image | xpath://img[@alt='Products'] |
-|    | ${parent_node}= | Set Variable | xpath://h6[contains(text(),'Select a product')]/..// |
-|    | : FOR | ${i} | IN RANGE | 0 | 3 |
-|    |    | ${index}= | Evaluate | ${i}+1 |
-|    |    | Check and Select List Value | ${parent_node}generic-dropdown[${index}]/select/option | ${TVNF_DEPLOYMENT_OPTIONS}[${i}] |
-|    | Check and Input Text | ${parent_node}input[@type='text'] | ${FASTPASS_TVNF_WORKFLOW} |
-|    | ${create_button}= | Set Variable | ${parent_node}button[contains(text(),'Create Deployment Instance')] |
-|    | Wait Until Element Is Enabled | ${create_button} |
-|    | Scroll To Element | ${create_button} |
-|    | Check and Click Button | ${create_button} |
 
 | Login NDAP |
 |    | Run Keyword And Ignore Error | Open Browser | Firefox |
@@ -62,5 +68,24 @@
 | Logout NDAP |
 |    | Close Browser |
 
-| Click Dashboard |
-|    | Check and Click Link | xpath://a[@href="/dashboard-view"] |
+| Modify Workflow Parameter |
+|    | [Arguments] | ${deployment_name} | ${workflow_name} | ${element} | ${value} |
+|    | Check and Click Image | xpath://img[@alt='Workflows'] |
+|    | ${workflow_link}= | Set Variable | xpath://a[contains(text(),'${deployment_name}')]/../../..//a[contains(text(),'${workflow_name}')] |
+|    | Scroll To Element | ${workflow_link} |
+|    | Check and Click Link | ${workflow_link} |
+|    | Check and Click Button | xpath://button[contains(text(),'Edit')] |
+|    | Check and Click Element | xpath://span[contains(text(),'Parameters')] |
+|    | Check and Input Text | ${element} | ${value} |
+|    | ${apply_change_button}= | Set Variable | ${element}/../button |
+|    | Check and Click Button | ${apply_change_button} |
+|    | Check and Click Element | xpath://span[contains(text(),'Details')] |
+|    | Check and Click Button | xpath://button[contains(text(),'Save Changes')] | True |
+
+| Start Workflow |
+|    | [Arguments] | ${deployment_name} | ${workflow_name} |
+|    | ${workflow_link}= | Set Variable | xpath://a[contains(text(),'${deployment_name}')]/../../..//a[contains(text(),'${workflow_name}')] |
+|    | ${start_workflow_button}= | Set Variable | ${workflow_link}/../../../div[3]/i[@title='Start this workflow'] |
+|    | Wait Until Element Is Visible | ${start_workflow_button} | 10 |
+|    | Scroll To Element | ${start_workflow_button} |
+|    | Check and Click Element | ${start_workflow_button} |
