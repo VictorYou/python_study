@@ -39,8 +39,12 @@
 |    | Wait Until Element Is Visible | ${element} | 10 |
 |    | Log | ${element} |
 |    | ${list}= | Get List Items | ${element}/.. |
-|    | List Should Contain Value | ${list} | ${value} |
-|    | Select From List By Label | ${element}/.. | ${value} |
+|    | ${len} | Evaluate | len(${list}) |
+|    | : FOR | ${i} | IN RANGE | 0 | ${len} |
+|    |    | Log | ${i} |
+|    |    | ${match} | Run Keyword And Return Status | Should Match Regexp | ${list}[${i}] | ${value}* |
+|    |    | Exit For Loop If | ${match} |
+|    | Run Keyword If | ${match} | Select From List By Label | ${element}/.. | ${list}[${i}] |
 
 | Check and Input Text |
 |    | [Arguments] | ${element} | ${text} |
@@ -85,3 +89,13 @@
 |    | ${x}= | Get Horizontal Position | ${element} |
 |    | ${y}= | Get Vertical Position | ${element} |
 |    | Execute Javascript | window.scrollTo(${x}, ${y}) |
+
+| Wait For Workflow Start Button |
+|    | [Arguments] | ${deployment_name} | ${workflow_name} |
+|    | ${deployment_link}= | Set Variable | xpath://a[contains(text(),'${deployment_name}')] |
+|    | Wait Until Element Is Visible | ${deployment_link} | 10 |
+|    | Scroll To Element | ${deployment_link} |
+|    | ${workflow_link}= | Set Variable | xpath://a[contains(text(),'${deployment_name}')]/../../..//a[contains(text(),'${workflow_name}')] |
+|    | ${start_workflow_button}= | Set Variable | ${workflow_link}/../../../div[3]/i[@title='Start this workflow'] |
+|    | Wait Until Element Is Visible | ${start_workflow_button} | 20 |
+|    | Return From Keyword | ${start_workflow_button} |
