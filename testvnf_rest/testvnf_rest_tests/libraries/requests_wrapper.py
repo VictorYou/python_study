@@ -7,6 +7,8 @@ import logging
 JSON_LIKE = [list, dict, str, unicode]
 
 
+TVNF_REST_HOME = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
 class requests_wrapper(object):
 
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
@@ -19,7 +21,12 @@ class requests_wrapper(object):
       print "command: {}".format(command)
       output = os.popen(command).read().strip()
       return output
-      
+
+    def send_https_no_proxy(self, method, url, params=''):
+      command = "curl --noproxy '*' --cacert {}/ssl/cert -X ".format(TVNF_REST_HOME) + method + " " + url + " " +params
+      print("command: {}".format(command))
+      output = os.popen(command).read().strip()
+      return output
 
     def send_http(self, method, url, status=None, ignore_error=False, file=None, **kwargs):
         method = method.lower()

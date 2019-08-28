@@ -1,1 +1,1 @@
-TESTVNF_URL = "http://127.0.0.1:8000/testvnf/v1"
+TESTVNF_URL = "https://127.0.0.1:443/testvnf/v1"
