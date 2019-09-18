@@ -136,6 +136,7 @@ class ReportTestResultReq(APIView):
   def put(self, request, sessionId, *args, **kwargs):
     ''' can be tested with:
         curl --noproxy '*' -X PUT -F logfile=@/home/viyou/github/python_study/testvnf_rest/manage.py -F TestResults="{\"info\":{\"testCaseId\": \"Create MR\", \"result\": \"pass\"}}" http://127.0.0.1:8000/testvnf/v1/testResults/12345/
+        curl --noproxy '*' --cacert ssl/cert -X PUT -F logfile=@/home/viyou/github/python_study/testvnf_rest/manage.py -F TestResults="{\"info\":{\"testCaseId\": \"Create MR\", \"result\": \"pass\"}}" https://127.0.0.1:443/testvnf/v1/testResults/12345
     '''
     response = Response()
     try:
