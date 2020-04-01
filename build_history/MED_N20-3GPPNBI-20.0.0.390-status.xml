@@ -1,0 +1,167 @@
+<ris-version-status
+><item netact_version='MED_N20/3GPPNBI/20.0.0.390,netact/product/99.20.04.0.132' value='green' creation='2020-04-18T00:33:58+03:00' key='ComponentUpgrade'
+  ><source
+    >N8_labs/CloneCLAB2949/20200417_233323_317253</source
+    ><description
+    >No tests</description
+    ></item
+  ><item netact_version='MED_N20/3GPPNBI/20.0.0.390,netact/product/99.20.04.0.132' value='green' creation='2020-04-18T04:24:57+03:00' key='SmokeOnNetAct'
+  ><source
+    >N8_labs/CloneCLAB2949/20200418_003400_173338</source
+    ><description
+    >Tests(194/0)</description
+    ></item
+  ><item value='netact/product/99.20.04.0.132' creation='2020-04-18T04:24:57+03:00' key='component_upgrade_validated_with'
+  /><item netact_version='netact_trunk_upg_from18_mediations_nbi1/product/99.20.04.0.132.2,netact18/product/18.0.0.603' value='red' creation='2020-04-18T13:53:24+03:00' key='Trunk-UPG-FROM18'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB2003/20200418_045751_019499</source
+    ><description
+    >mediations/NBI1/20.0.4.38</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from19_mediations_nbi1/product/99.20.04.0.132.2,netact19/product/19.0.0.439' value='red' creation='2020-04-18T19:01:03+03:00' key='Trunk-UPG-FROM19'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1118/20200418_050028_264143</source
+    ><description
+    >Tests(287/4)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from19_mediations_nbi1/product/99.20.04.0.144.1,netact19/product/19.0.0.439' value='red' creation='2020-04-18T19:33:34+03:00' key='Trunk-UPG-FROM19'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1690/20200418_192026_749018</source
+    ><description
+    >mediations/NBI1/20.0.4.39</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18a_mediations_nbi1/product/99.20.04.0.132.2,netact18a/product/18.2.0.472,netact18/product/18.0.0.603' value='red' creation='2020-04-18T20:18:49+03:00' key='Trunk-UPG-FROM18A'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1037/20200418_045844_119123</source
+    ><description
+    >Tests(287/4)</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.132.2' value='red' creation='2020-04-18T20:43:48+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0022_small/20200418_045626_532925</source
+    ><description
+    >Tests(260/1)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18a_mediations_nbi1/product/99.20.04.0.144.1,netact18a/product/18.2.0.472,netact18/product/18.0.0.603' value='red' creation='2020-04-18T20:51:02+03:00' key='Trunk-UPG-FROM18A'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1827/20200418_203843_934121</source
+    ><description
+    >mediations/NBI1/20.0.4.39</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.144.1' value='red' creation='2020-04-18T21:15:37+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0014_small/20200418_210817_450684</source
+    ><description
+    >mediations/NBI1/20.0.4.39</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18_mediations_nbi1/product/99.20.04.0.144.1,netact18/product/18.0.0.603' value='red' creation='2020-04-19T07:34:53+03:00' key='Trunk-UPG-FROM18'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB2003/20200418_140631_601811</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from19_mediations_nbi1/product/99.20.04.0.152.1,netact19/product/19.0.0.439' value='red' creation='2020-04-19T18:47:01+03:00' key='Trunk-UPG-FROM19'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1788/20200419_050014_999255</source
+    ><description
+    >Tests(287/4)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18a_mediations_nbi1/product/99.20.04.0.152.1,netact18a/product/18.2.0.472,netact18/product/18.0.0.603' value='red' creation='2020-04-19T19:56:47+03:00' key='Trunk-UPG-FROM18A'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1357/20200419_050241_989150</source
+    ><description
+    >Tests(285/6)</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.152.1' value='red' creation='2020-04-19T23:12:11+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0039_small/20200419_045611_212295</source
+    ><description
+    >Tests(207/0)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18_mediations_nbi1/product/99.20.04.0.152.1,netact18/product/18.0.0.603' value='red' creation='2020-04-19T23:20:46+03:00' key='Trunk-UPG-FROM18'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1467/20200419_075747_335011</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from19_mediations_nbi1/product/99.20.04.0.152.2,netact19/product/19.0.0.439' value='red' creation='2020-04-20T09:17:40+03:00' key='Trunk-UPG-FROM19'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1866/20200419_190827_708157</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18a_mediations_nbi1/product/99.20.04.0.152.2,netact18a/product/18.2.0.472,netact18/product/18.0.0.603' value='red' creation='2020-04-20T12:03:44+03:00' key='Trunk-UPG-FROM18A'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1931/20200419_201443_781975</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18_mediations_nbi1/product/99.20.04.0.152.2,netact18/product/18.0.0.603' value='red' creation='2020-04-20T15:59:44+03:00' key='Trunk-UPG-FROM18'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB2082/20200419_234551_188593</source
+    ><description
+    >Tests(284/7)</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.152.2' value='red' creation='2020-04-20T17:43:42+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0032_small/20200419_234009_658805</source
+    ><description
+    >Tests(207/0)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18a_mediations_nbi1/product/99.20.04.0.161.1,netact18a/product/18.2.0.472,netact18/product/18.0.0.603' value='red' creation='2020-04-21T01:38:40+03:00' key='Trunk-UPG-FROM18A'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB874/20200420_122646_763936</source
+    ><description
+    >Tests(92/199)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from19_mediations_nbi1/product/99.20.04.0.161.1,netact19/product/19.0.0.439' value='red' creation='2020-04-21T02:07:50+03:00' key='Trunk-UPG-FROM19'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB584/20200420_093631_237827</source
+    ><description
+    >Tests(285/6)</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.161.1' value='red' creation='2020-04-21T10:25:20+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0045_small/20200420_180817_322053</source
+    ><description
+    >Tests(261/0)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18_mediations_nbi1/product/99.20.04.0.161.1,netact18/product/18.0.0.603' value='red' creation='2020-04-21T10:35:48+03:00' key='Trunk-UPG-FROM18'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB2068/20200420_183400_912427</source
+    ><description
+    >Tests(284/7)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from19_mediations_nbi1/product/99.20.04.0.161.2,netact19/product/19.0.0.439' value='red' creation='2020-04-21T18:54:56+03:00' key='Trunk-UPG-FROM19'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB066/20200421_044828_316472</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18a_mediations_nbi1/product/99.20.04.0.161.2,netact18a/product/18.2.0.472,netact18/product/18.0.0.603' value='red' creation='2020-04-21T20:26:55+03:00' key='Trunk-UPG-FROM18A'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB1931/20200421_044248_000251</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_trunk_upg_from18_mediations_nbi1/product/99.20.04.0.167.1,netact18/product/18.0.0.603' value='red' creation='2020-04-22T03:10:54+03:00' key='Trunk-UPG-FROM18'
+  ><source
+    >disciplined_promotion_test_service/CloneCLAB596/20200421_110148_445668</source
+    ><description
+    >Tests(286/5)</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.167.1' value='red' creation='2020-04-22T07:17:54+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0039_small/20200421_104817_973539</source
+    ><description
+    >Tests(13/0)</description
+    ></item
+  ><item netact_version='netact_centralized_promotion_install_mediations_nbi1/product/99.20.04.0.167.2' value='red' creation='2020-04-22T11:48:26+03:00' key='CENTRALIZED-PROMOTION-INSTALL'
+  ><source
+    >disciplined_promotion_test_service/sulp0035_small/20200422_074009_198251</source
+    ><description
+    >mediations/NBI1/20.0.4.49</description
+    ></item
+  ><risid component='3GPPNBI' group='MED_N20' version='20.0.0.390'
+  /></ris-version-status
+>
