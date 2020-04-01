@@ -5,7 +5,6 @@ from .models import Tvnf, Sut
 from .serializers import TvnfSerializer, SutSerializer
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import list_route
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import viewsets

@@ -8,9 +8,6 @@
 | ${NDAP}        | https://10.157.169.150 |
 
 | *** Keywords *** |
-| Setup NEAC for NE Type |
-|    | [Return] | @{PASSWORDS} |
-
 | Check and Click |
 |    | [Arguments] | ${type} | ${element} | ${wait}=False |
 |    | Wait Until Element Is Visible | ${element} | 10 |
@@ -55,8 +52,8 @@
 | Create TVNF Object |
 |    | Login NDAP |
 |    | Check and Click Image | xpath://img[@alt='Test Cases'] |
-|    | Check and Click Link | xpath://a[@class='nav-link' and text()='TVNF Settings'] |
-|    | Check and Click Button | xpath://button[text()='Add TVNF'] |
+|    | Check and Click Link | xpath://a[@class='nav-link' and text()='Test Harness Settings'] |
+|    | Check and Click Button | xpath://button[text()='Add Test Harness'] |
 |    | Check and Input Text | xpath://input[@id='tn'] | ${TVNF_INFO}[0] |
 |    | Check and Input Text | xpath://input[@id='tv'] | ${TVNF_INFO}[1] |
 |    | Check and Input Text | xpath://input[@id='ap'] | ${TVNF_INFO}[2] |
@@ -77,9 +74,9 @@
 |    | Run Keyword And Ignore Error | Open Browser | Firefox |
 |    | ${status}= | Run Keyword and Return Status | Go To | ${NDAP} |
 |    | Run Keyword if | ${status} != True | Close Browser |
-|    | Check and Input Text | applicationLoginUsername | admin |
-|    | Check and Input Text | applicationLoginPassword | Admin123 |
-|    | Check and Click Button | xpath=//*[@id="login"] | True |
+|    | Check and Input Text | xpath=//input[@name='username'] | admin |
+|    | Check and Input Text | xpath=//input[@name='password'] | Admin123$ |
+|    | Check and Click Button | xpath=//input[@name="login"] | True |
 
 | Logout NDAP |
 |    | Close Browser |
