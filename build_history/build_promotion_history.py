@@ -12,7 +12,6 @@ class RisPromotionHistory():
     self.group, self.component, self.version = ris_info[0], ris_info[1], ris_info[2]
     self._ris_status_file = f'{self.group}-{self.component}-{self.version}-status.xml'
     self.download_files(self._ris_status_file, 'ris.xml')
-    pass
     
   def download_files(self, *files):
     ssh = paramiko.SSHClient()
