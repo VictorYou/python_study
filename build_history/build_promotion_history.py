@@ -52,7 +52,6 @@ class RisPromotionHistory():
 
   def get_promotion_date_timestamp(self):
     status_list_timestamp = self.get_status_list_timestamp()
-    log.debug(f'status_list_timestamp: {status_list_timestamp}')
     latest_timestamp = 0
     for keys in self.status_keys_list:
       timestamps = []
@@ -77,6 +76,8 @@ class RisPromotionHistory():
     commit_date = self.get_commit_date().split('+')[0]
     return int(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S").timestamp())
     
-
-  def promotion_time(self):
-    pass
+  def get_promotion_time(self):
+    self.get_status_list()
+    commit_date = self.get_commit_date_timestamp()
+    promotion_date = self.get_promotion_date_timestamp()
+    return promotion_date - commit_date

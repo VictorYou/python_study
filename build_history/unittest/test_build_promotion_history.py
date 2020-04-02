@@ -39,9 +39,17 @@ class TestRisPromotionHistory(unittest.TestCase):
       {'release_upgrade_validated_with': 12},
       {'scratch_install_validated_with': 13},
     ]
+    status_list_timestamp2 = [
+      {'component_upgrade_validated_with': 10},
+      {'ready_for_product': 14},
+      {'release_upgrade_validated_with': 12},
+      {'scratch_install_validated_with': 13},
+    ]
     orig = self.history.get_status_list_timestamp
     self.history.get_status_list_timestamp = MagicMock(return_value=status_list_timestamp1)
     self.assertEqual(self.history.get_promotion_date_timestamp(), 13)
+    self.history.get_status_list_timestamp = MagicMock(return_value=status_list_timestamp2)
+    self.assertEqual(self.history.get_promotion_date_timestamp(), 14)
     self.history.get_status_list_timestamp = orig
 
   def test_get_commit_date(self):
@@ -50,6 +58,15 @@ class TestRisPromotionHistory(unittest.TestCase):
   def test_get_commit_date_timestamp(self):
     self.history.get_commit_date = MagicMock(return_value='2020-04-18T08:07:20+03:00')
     self.assertEqual(self.history.get_commit_date_timestamp(), 1587168440)
+
+  def test_get_promotion_time(self):
+    orig_get_status_list = self.history.get_status_list
+    self.history.get_status_list = MagicMock(return_value=True)
+    self.history.get_commit_date_timestamp = MagicMock(return_value=13)
+    self.history.get_promotion_date_timestamp = MagicMock(return_value=20)
+    self.assertEqual(self.history.get_promotion_time(), 7)
+    self.history.get_status_list = orig_get_status_list
+    
 
 if __name__ == '__main__':
     unittest.main()
