@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 
 from datetime import datetime
 from log import log
+from pytz import timezone
 
 class RisPromotionHistory():
   backend = '10.9.137.108'
@@ -13,6 +14,7 @@ class RisPromotionHistory():
   backend_password = '8n'
   package_home = '/opt/mpp/packages/'
   status_keys_list = [['component_upgrade_validated_with', 'release_upgrade_validated_with', 'scratch_install_validated_with'], ['ready_for_product']]
+  timezone = timezone('Europe/Helsinki')
 
   def __init__(self, ris_id):
     ris_info = ris_id.split('/')
@@ -47,7 +49,7 @@ class RisPromotionHistory():
     for status in status_list:
       key = list(status.keys())[0]
       date = status[key].split('+')[0]
-      status[key] = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S").timestamp()
+      status[key] = self.timezone.localize(datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")).timestamp()
     return status_list  
 
   def get_promotion_date_timestamp(self):
@@ -74,7 +76,7 @@ class RisPromotionHistory():
 
   def get_commit_date_timestamp(self):
     commit_date = self.get_commit_date().split('+')[0]
-    return int(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S").timestamp())
+    return int(self.timezone.localize(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S")).timestamp())
     
   def get_promotion_time(self):
     self.get_status_list()

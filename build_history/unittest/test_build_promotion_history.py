@@ -25,8 +25,8 @@ class TestRisPromotionHistory(unittest.TestCase):
       {'ready_for_product': '2020-04-23T06:03:22+03:00'},
     ]
     expected_result = [
-      {'component_upgrade_validated_with': 1587155097},
-      {'ready_for_product': 1587593002},
+      {'component_upgrade_validated_with': 1587173097},
+      {'ready_for_product': 1587611002},
     ]
     self.history.get_status_list = MagicMock(return_value=status_list)
     expected_result = sorted(expected_result, key=lambda d: list(d.keys()))
@@ -57,7 +57,7 @@ class TestRisPromotionHistory(unittest.TestCase):
 
   def test_get_commit_date_timestamp(self):
     self.history.get_commit_date = MagicMock(return_value='2020-04-18T08:07:20+03:00')
-    self.assertEqual(self.history.get_commit_date_timestamp(), 1587168440)
+    self.assertEqual(self.history.get_commit_date_timestamp(), 1587186440)
 
   def test_get_promotion_time(self):
     orig_get_status_list = self.history.get_status_list
