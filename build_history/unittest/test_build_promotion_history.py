@@ -1,12 +1,14 @@
 import unittest
 import sys
 sys.path.append("..")
-from build_promotion_history import RisPromotionHistory
+from build_promotion_history import RisVersionPromotionHistory, RisComponentPromotionHistory
 from unittest.mock import MagicMock
 
-class TestRisPromotionHistory(unittest.TestCase):
-  history = RisPromotionHistory('MED_N20/3GPPNBI/20.0.0.390')
+class TestRisVersionPromotionHistory(unittest.TestCase):
+  history = RisVersionPromotionHistory('MED_N20/3GPPNBI/20.0.0.390')
+
   def test_init(self):
+    self.assertEqual(self.history._ris_id, 'MED_N20/3GPPNBI/20.0.0.390')
     self.assertEqual(self.history._ris_status_file, 'MED_N20-3GPPNBI-20.0.0.390-status.xml')
 
   def test_get_status_list(self):
@@ -17,7 +19,10 @@ class TestRisPromotionHistory(unittest.TestCase):
       {'scratch_install_validated_with': '2020-04-23T10:29:23+03:00'},
     ]
     expected_result = sorted(expected_result, key=lambda d: list(d.keys()))
+    orig = self.history.download_files
+    self.history.download_files = MagicMock(return_value=True)
     self.assertEqual(self.history.get_status_list(), expected_result)
+    self.history.download_files = orig
 
   def test_get_status_list_timestamp(self):
     status_list = [
@@ -41,15 +46,15 @@ class TestRisPromotionHistory(unittest.TestCase):
     ]
     status_list_timestamp2 = [
       {'component_upgrade_validated_with': 10},
-      {'ready_for_product': 14},
+      {'ready_for_product': 9},
       {'release_upgrade_validated_with': 12},
       {'scratch_install_validated_with': 13},
     ]
     orig = self.history.get_status_list_timestamp
     self.history.get_status_list_timestamp = MagicMock(return_value=status_list_timestamp1)
-    self.assertEqual(self.history.get_promotion_date_timestamp(), 13)
+    self.assertEqual(self.history.get_promotion_date_timestamp(), 11)
     self.history.get_status_list_timestamp = MagicMock(return_value=status_list_timestamp2)
-    self.assertEqual(self.history.get_promotion_date_timestamp(), 14)
+    self.assertEqual(self.history.get_promotion_date_timestamp(), 10)
     self.history.get_status_list_timestamp = orig
 
   def test_get_commit_date(self):
@@ -59,14 +64,31 @@ class TestRisPromotionHistory(unittest.TestCase):
     self.history.get_commit_date = MagicMock(return_value='2020-04-18T08:07:20+03:00')
     self.assertEqual(self.history.get_commit_date_timestamp(), 1587186440)
 
-  def test_get_promotion_time(self):
+  def test_get_promotion_history(self):
     orig_get_status_list = self.history.get_status_list
     self.history.get_status_list = MagicMock(return_value=True)
     self.history.get_commit_date_timestamp = MagicMock(return_value=13)
     self.history.get_promotion_date_timestamp = MagicMock(return_value=20)
-    self.assertEqual(self.history.get_promotion_time(), 7)
+    expected_result = {'ris_id': 'MED_N20/3GPPNBI/20.0.0.390', 'promotion_date': 20, 'promotion_time': 7}
+    self.assertEqual(self.history.get_promotion_history(), expected_result)
     self.history.get_status_list = orig_get_status_list
     
+
+class TestRisComponentPromotionHistory(unittest.TestCase):
+  history = RisComponentPromotionHistory('MED_N20/3GPPNBI')
+
+  def test_init(self):
+    self.assertEqual(self.history._ris_group_component, 'MED_N20/3GPPNBI')
+    self.assertEqual(self.history._chronological, 'chronological.xml')
+
+  def test_get_versions(self):
+    orig = self.history.download_file
+    self.history.download_file = MagicMock(return_value=True)
+    expected_list = ['20.0.0.400', '20.0.0.401', '20.0.0.398']
+    expected_list.sort()
+    self.assertEqual(self.history.get_versions(), expected_list)
+    self.history.download_file = orig
+
 
 if __name__ == '__main__':
     unittest.main()
