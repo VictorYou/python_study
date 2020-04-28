@@ -1,3 +1,5 @@
+import argparse
+import inspect
 import logging
 import os
 import paramiko
@@ -8,6 +10,15 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from log import log
 from pytz import timezone
+
+
+class MissingStatus(Exception):
+  pass
+
+
+class CommitDateTooOld(Exception):
+  pass
+
 
 class FileDownloader():
   backend = '10.9.137.108'
@@ -20,25 +31,34 @@ class FileDownloader():
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(self.backend, username=self.backend_username, password=self.backend_password, look_for_keys=False, timeout=60)
     sftp_client = ssh.open_sftp()
-    file_path = os.path.join(self.package_home, prefix, self.version, file)
-    sftp_client.get(file_path, file)
-    sftp_client.close()
+    file_path = os.path.join(self.package_home, prefix, file)
+    log.debug(f'lineno: {inspect.currentframe().f_lineno}, file_path: {file_path}')
+    try:
+      sftp_client.get(file_path, file)
+    except IOError as e:
+      log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+      raise e
+    finally:
+      sftp_client.close()
 
 
 class RisVersionPromotionHistory():
-  status_keys_list = [['component_upgrade_validated_with', 'release_upgrade_validated_with', 'scratch_install_validated_with'], ['ready_for_product']]
   timezone = timezone('Europe/Helsinki')
 
-  def __init__(self, ris_id):
+  def __init__(self, ris_id, keys_list, date_after):
     self._ris_id = ris_id
     ris_info = ris_id.split('/')
     self.group, self.component, self.version = ris_info[0], ris_info[1], ris_info[2]
     self._ris_status_file = f'{self.group}-{self.component}-{self.version}-status.xml'
     self._ris_file = 'ris.xml'
+    self._status_keys_list = []
+    self._date_after = self.timezone.localize(datetime.strptime(date_after, "%Y-%m-%dT%H:%M:%S"))
+    for keys in keys_list.split(':'):
+      self._status_keys_list.append(keys.split(','))
 
   def download_files(self):
-    prefix = os.path.join(self.group, self.component)
-    for file in files:
+    prefix = os.path.join(self._ris_id)
+    for file in [self._ris_status_file, 'ris.xml']:
       FileDownloader().download_file(prefix, file)
 
   def get_status_list(self):
@@ -46,11 +66,12 @@ class RisVersionPromotionHistory():
     with open(self._ris_status_file) as file:
       tree = ET.parse(file)
     root = tree.getroot()
-    key_list = [item for sublist in self.status_keys_list for item in sublist]
+    key_list = [item for sublist in self._status_keys_list for item in sublist]
     status_list = [{elem.attrib['key']: elem.attrib['creation']} for elem in root if elem.tag == 'item' and elem.attrib['key'] in key_list and re.match('netact/product/.*', elem.attrib['value'])]
     status_list_rfp = [{'ready_for_product': elem.attrib['creation']} for elem in root if elem.tag == 'item' and elem.attrib['key'] == 'ready_for_product']
     status_list += status_list_rfp
     status_list = sorted(status_list, key=lambda d: list(d.keys()))
+    log.debug(f'lineno: {inspect.currentframe().f_lineno}, status_list: {status_list}')
     return status_list
 
   def get_status_list_timestamp(self):
@@ -64,13 +85,15 @@ class RisVersionPromotionHistory():
   def get_promotion_date_timestamp(self):
     status_list_timestamp = self.get_status_list_timestamp()
     latest_timestamps = []
-    for keys in self.status_keys_list:
+    for keys in self._status_keys_list:
       timestamps = []
       for status in status_list_timestamp:
         key = list(status.keys())[0]
         if key in keys:
           timestamps.append(status[key])
-      log.debug(f'timestamps: {timestamps}')
+      if len(timestamps) == 0:
+        raise MissingStatus(f'lineno: {inspect.currentframe().f_lineno}, missing status: {keys}')
+      log.debug(f'lineno: {inspect.currentframe().f_lineno}, timestamps: {timestamps}')
       timestamps.sort()
       latest_timestamps.append(timestamps[0])
     latest_timestamps.sort()
@@ -84,7 +107,12 @@ class RisVersionPromotionHistory():
 
   def get_commit_date_timestamp(self):
     commit_date = self.get_commit_date().split('+')[0]
-    return int(self.timezone.localize(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S")).timestamp())
+    date = self.timezone.localize(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S"))
+    log.debug(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
+    log.debug(f'lineno: {inspect.currentframe().f_lineno}, self._date_after: {self._date_after}')
+    if date < self._date_after:
+      raise CommitDateTooOld(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
+    return int(date.timestamp())
     
   def get_promotion_history(self):
     self.get_status_list()
@@ -99,7 +127,7 @@ class RisComponentPromotionHistory():
     self._chronological = "chronological.xml"
 
   def download_file(self):
-    FileDownloader().download_file(self._chronological)
+    FileDownloader().download_file(self._ris_group_component, self._chronological)
 
   def get_versions(self):
     with open(self._chronological) as file:
@@ -109,12 +137,18 @@ class RisComponentPromotionHistory():
     versions.sort()
     return versions
 
-  def get_promotion_history(self):
+  def get_promotion_history(self, keys_list):
     promotion_history = []
+    self.download_file()
     versions = self.get_versions()
     for version in versions:
       ris_id = os.path.join(self._ris_group_component, version)
-      promotion_history.append(RisVersionPromotionHistory(ris_id).get_promotion_history)
+      try:
+        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list).get_promotion_history())
+      except Exception as e:
+        log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+
+    log.debug(f"lineno: {inspect.currentframe().f_lineno}, promotion_history: {promotion_history}")
     return promotion_history
 
 
@@ -126,16 +160,21 @@ class PromotionHistory():
     with open(self.config_file) as file:
       for line in file:
         self.__ris_group_components.append(line.strip())
-    log.debug(f"ris_group_components: {self.__ris_group_components}")
+    log.debug(f"lineno: {inspect.currentframe().f_lineno}, ris_group_components: {self.__ris_group_components}")
 
-  def get_promotion_history(self):
+  def get_promotion_history(self, keys_list):
     for ris_group_component in self.__ris_group_components:
-      self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history())
-    log.debug(f"self.__history: {self.__history}")
+      self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list))
+    log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
         
 
 def main(argv=None):
-  PromotionHistory().get_promotion_history()
+  logging.getLogger("paramiko").setLevel(logging.WARNING)
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
+  args = parser.parse_args()
+  log.debug(f"lineno: {inspect.currentframe().f_lineno}, keys_list: {args.keys_list}")
+  PromotionHistory().get_promotion_history(args.keys_list)
 
 
 if __name__ == "__main__":

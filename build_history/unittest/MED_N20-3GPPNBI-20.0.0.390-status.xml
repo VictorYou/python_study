@@ -211,8 +211,7 @@
     ><description
     >Tests(286/5)</description
     ></item
-  ><item value='netact/product/99.20.04.0.174' creation='2020-04-22T10:14:34+03:00' key='release_upgrade_validated_with'
-  /><item value='stable_build' creation='2020-04-23T10:14:35+03:00' key='scratch_install_validated_with'
+  ><item value='stable_build' creation='2020-04-23T10:14:34+03:00' key='scratch_install_validated_with'
   /><item value='netact/product/99.20.04.0.174' creation='2020-04-23T10:29:23+03:00' key='scratch_install_validated_with'
   /><risid component='3GPPNBI' group='MED_N20' version='20.0.0.390'
   /></ris-version-status
