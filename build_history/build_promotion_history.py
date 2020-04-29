@@ -117,7 +117,7 @@ class RisVersionPromotionHistory():
     self.get_status_list()
     commit_date = self.get_commit_date_timestamp()
     promotion_date = self.get_promotion_date_timestamp()
-    return {'ris_id': self._ris_id, 'promotion_date': promotion_date, 'promotion_time': promotion_date - commit_date }
+    return {'ris_id': self._ris_id, 'promotion_date': promotion_date, 'promotion_time': promotion_date - commit_date, 'commit_date': commit_date }
 
 
 class RisComponentPromotionHistory():
@@ -165,23 +165,23 @@ class PromotionHistory():
     for ris_group_component in self.__ris_group_components:
       self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list, date_after))
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
+    return self
+
+  def cleanup(self):
+    os.system('rm *.xml')
         
 
 def main(argv=None):
   logging.getLogger("paramiko").setLevel(logging.WARNING)
+  week_ago = LocalTimeZone.timezone.localize(datetime.now() + timedelta(days=-7)).strftime('%Y-%m-%dT%H:%M:%S')
+
   parser = argparse.ArgumentParser()
   parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
-  parser.add_argument("-d", "--date-after", dest="date_after", default='', help="date after, eg: 2020-04-18T00:33:58")
+  parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-18T00:33:58")
   args = parser.parse_args()
-  if args.date_after is None:
-    date_after = datetime.now() + timedelta(days=-7)
-  else:
-    date_after = datetime.strptime('2020-04-18T00:33:58', "%Y-%m-%dT%H:%M:%S")
-  date_after = LocalTimeZone.timezone.localize(date_after).strftime('%Y-%m-%dT%H:%M:%S')
+  log.debug(f"lineno: {inspect.currentframe().f_lineno}, args: {args}")
 
-  log.debug(f"lineno: {inspect.currentframe().f_lineno}, keys_list: {args.keys_list}")
-  log.debug(f"lineno: {inspect.currentframe().f_lineno}, date_after: {date_after}")
-  PromotionHistory().get_promotion_history(args.keys_list, date_after)
+  PromotionHistory().get_promotion_history(args.keys_list, args.date_after).cleanup()
 
 
 if __name__ == "__main__":
