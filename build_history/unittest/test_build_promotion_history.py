@@ -22,7 +22,6 @@ class TestRisVersionPromotionHistory(unittest.TestCase):
     expected_result = sorted(expected_result, key=lambda d: list(d.keys()))
     orig = self.history.download_files
     self.history.download_files = MagicMock(return_value=True)
-    print(f'expected_result: {expected_result}')
     self.assertEqual(self.history.get_status_list(), expected_result)
     self.history.download_files = orig
 

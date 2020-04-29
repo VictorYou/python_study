@@ -7,7 +7,7 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from log import log
 from pytz import timezone
 
@@ -18,6 +18,10 @@ class MissingStatus(Exception):
 
 class CommitDateTooOld(Exception):
   pass
+
+
+class LocalTimeZone():
+  timezone = timezone('Europe/Helsinki')
 
 
 class FileDownloader():
@@ -43,8 +47,6 @@ class FileDownloader():
 
 
 class RisVersionPromotionHistory():
-  timezone = timezone('Europe/Helsinki')
-
   def __init__(self, ris_id, keys_list, date_after):
     self._ris_id = ris_id
     ris_info = ris_id.split('/')
@@ -52,7 +54,7 @@ class RisVersionPromotionHistory():
     self._ris_status_file = f'{self.group}-{self.component}-{self.version}-status.xml'
     self._ris_file = 'ris.xml'
     self._status_keys_list = []
-    self._date_after = self.timezone.localize(datetime.strptime(date_after, "%Y-%m-%dT%H:%M:%S"))
+    self._date_after = LocalTimeZone.timezone.localize(datetime.strptime(date_after, "%Y-%m-%dT%H:%M:%S"))
     for keys in keys_list.split(':'):
       self._status_keys_list.append(keys.split(','))
 
@@ -67,11 +69,8 @@ class RisVersionPromotionHistory():
       tree = ET.parse(file)
     root = tree.getroot()
     key_list = [item for sublist in self._status_keys_list for item in sublist]
-    status_list = [{elem.attrib['key']: elem.attrib['creation']} for elem in root if elem.tag == 'item' and elem.attrib['key'] in key_list and re.match('netact/product/.*', elem.attrib['value'])]
-    status_list_rfp = [{'ready_for_product': elem.attrib['creation']} for elem in root if elem.tag == 'item' and elem.attrib['key'] == 'ready_for_product']
-    status_list += status_list_rfp
+    status_list = [ {elem.attrib['key']: elem.attrib['creation']} for elem in root if elem.tag == 'item' and elem.attrib['key'] in key_list and elem.attrib['value'] != 'stable_build' ]
     status_list = sorted(status_list, key=lambda d: list(d.keys()))
-    log.debug(f'lineno: {inspect.currentframe().f_lineno}, status_list: {status_list}')
     return status_list
 
   def get_status_list_timestamp(self):
@@ -79,7 +78,7 @@ class RisVersionPromotionHistory():
     for status in status_list:
       key = list(status.keys())[0]
       date = status[key].split('+')[0]
-      status[key] = self.timezone.localize(datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")).timestamp()
+      status[key] = LocalTimeZone.timezone.localize(datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")).timestamp()
     return status_list  
 
   def get_promotion_date_timestamp(self):
@@ -107,7 +106,7 @@ class RisVersionPromotionHistory():
 
   def get_commit_date_timestamp(self):
     commit_date = self.get_commit_date().split('+')[0]
-    date = self.timezone.localize(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S"))
+    date = LocalTimeZone.timezone.localize(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S"))
     log.debug(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
     log.debug(f'lineno: {inspect.currentframe().f_lineno}, self._date_after: {self._date_after}')
     if date < self._date_after:
@@ -137,14 +136,14 @@ class RisComponentPromotionHistory():
     versions.sort()
     return versions
 
-  def get_promotion_history(self, keys_list):
+  def get_promotion_history(self, keys_list, date_after):
     promotion_history = []
     self.download_file()
     versions = self.get_versions()
     for version in versions:
       ris_id = os.path.join(self._ris_group_component, version)
       try:
-        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list).get_promotion_history())
+        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get_promotion_history())
       except Exception as e:
         log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
 
@@ -162,9 +161,9 @@ class PromotionHistory():
         self.__ris_group_components.append(line.strip())
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, ris_group_components: {self.__ris_group_components}")
 
-  def get_promotion_history(self, keys_list):
+  def get_promotion_history(self, keys_list, date_after):
     for ris_group_component in self.__ris_group_components:
-      self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list))
+      self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list, date_after))
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
         
 
@@ -172,9 +171,17 @@ def main(argv=None):
   logging.getLogger("paramiko").setLevel(logging.WARNING)
   parser = argparse.ArgumentParser()
   parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
+  parser.add_argument("-d", "--date-after", dest="date_after", default='', help="date after, eg: 2020-04-18T00:33:58")
   args = parser.parse_args()
+  if args.date_after is None:
+    date_after = datetime.now() + timedelta(days=-7)
+  else:
+    date_after = datetime.strptime('2020-04-18T00:33:58', "%Y-%m-%dT%H:%M:%S")
+  date_after = LocalTimeZone.timezone.localize(date_after).strftime('%Y-%m-%dT%H:%M:%S')
+
   log.debug(f"lineno: {inspect.currentframe().f_lineno}, keys_list: {args.keys_list}")
-  PromotionHistory().get_promotion_history(args.keys_list)
+  log.debug(f"lineno: {inspect.currentframe().f_lineno}, date_after: {date_after}")
+  PromotionHistory().get_promotion_history(args.keys_list, date_after)
 
 
 if __name__ == "__main__":
