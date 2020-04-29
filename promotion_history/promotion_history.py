@@ -1,6 +1,7 @@
 import argparse
 import inspect
 import logging
+import mysql.connector
 import os
 import paramiko
 import re
@@ -8,6 +9,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 from datetime import datetime, timedelta
+from functools import wraps
 from log import log
 from pytz import timezone
 
@@ -22,6 +24,40 @@ class CommitDateTooOld(Exception):
 
 class LocalTimeZone():
   timezone = timezone('Europe/Helsinki')
+
+class DBConnector():
+  user = 'root'
+  password = 'Yh123$%^'
+  host='10.55.76.34'
+  port=31884
+  database='promotion_history'
+
+  def __init__(self):
+    try:
+      self._cnx = mysql.connector.connect(user=self.user, password=self.password, port=self.port, database=self.database)
+      self._cursor = self._cnx.cursor()
+    except mysql.connector.Error as err:
+      log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+
+  def __enter__(self):
+    return self._cursor
+
+  def __exit__(self):
+    self._cursor.close()
+    self._cnx.close()
+    
+
+  def execute(self, commands):
+    try:
+      cnx = mysql.connector.connect(user=self.user, password=self.password, port=self.port, database=self.database)
+      cursor = cnx.cursor()
+      for command in commands:
+        cursor.execute(command)
+      cursor.close()
+    except mysql.connector.Error as err:
+      log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+    finally:
+      cnx.close()
 
 
 class FileDownloader():
@@ -117,7 +153,10 @@ class RisVersionPromotionHistory():
     self.get_status_list()
     commit_date = self.get_commit_date_timestamp()
     promotion_date = self.get_promotion_date_timestamp()
-    return {'ris_id': self._ris_id, 'promotion_date': promotion_date, 'promotion_time': promotion_date - commit_date, 'commit_date': commit_date }
+    return {'ris_id': self._ris_id, 'ris_component': self.component, 'promotion_date': promotion_date, 'promotion_time': promotion_date - commit_date, 'commit_date': commit_date}
+
+  def save_promotion_history(self):
+    pass
 
 
 class RisComponentPromotionHistory():
@@ -153,6 +192,7 @@ class RisComponentPromotionHistory():
 
 class PromotionHistory():
   config_file = "ris_group_components.txt"
+  table = 'promotion'
 
   def __init__(self):
     self.__ris_group_components, self.__history = [], []
@@ -161,10 +201,16 @@ class PromotionHistory():
         self.__ris_group_components.append(line.strip())
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, ris_group_components: {self.__ris_group_components}")
 
-  def get_promotion_history(self, keys_list, date_after):
+  def get(self, keys_list, date_after):
     for ris_group_component in self.__ris_group_components:
       self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list, date_after))
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
+    return self
+
+  def save(self):
+    with DBConnector() as d:
+      for data in self.__history:
+        d.execute(f"insert into {self.table}(component, version, promotion_date, commit_date, promotion_time) values({data.ris_component}, {data.ris_id}, {data.promotion_date}, {data.commit_date}, {data.promotion_time})")
     return self
 
   def cleanup(self):
@@ -181,7 +227,7 @@ def main(argv=None):
   args = parser.parse_args()
   log.debug(f"lineno: {inspect.currentframe().f_lineno}, args: {args}")
 
-  PromotionHistory().get_promotion_history(args.keys_list, args.date_after).cleanup()
+  PromotionHistory().get(args.keys_list, args.date_after).save().cleanup()
 
 
 if __name__ == "__main__":

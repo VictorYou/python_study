@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append("..")
-from build_promotion_history import RisVersionPromotionHistory, RisComponentPromotionHistory, MissingStatus, CommitDateTooOld
+from promotion_history import RisVersionPromotionHistory, RisComponentPromotionHistory, MissingStatus, CommitDateTooOld
 from unittest.mock import MagicMock
 
 class TestRisVersionPromotionHistory(unittest.TestCase):
@@ -81,7 +81,7 @@ class TestRisVersionPromotionHistory(unittest.TestCase):
     self.history.get_status_list = MagicMock(return_value=True)
     self.history.get_commit_date_timestamp = MagicMock(return_value=13)
     self.history.get_promotion_date_timestamp = MagicMock(return_value=20)
-    expected_result = {'ris_id': 'MED_N20/3GPPNBI/20.0.0.390', 'promotion_date': 20, 'promotion_time': 7, 'commit_date': 13}
+    expected_result = {'ris_id': 'MED_N20/3GPPNBI/20.0.0.390', 'ris_component': '3GPPNBI', 'promotion_date': 20, 'promotion_time': 7, 'commit_date': 13}
     self.assertEqual(self.history.get_promotion_history(), expected_result)
     self.history.get_status_list = orig_get_status_list
     
