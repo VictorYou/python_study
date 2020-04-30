@@ -82,7 +82,7 @@ class TestRisVersionPromotionHistory(unittest.TestCase):
     self.history.get_commit_date_timestamp = MagicMock(return_value=13)
     self.history.get_promotion_date_timestamp = MagicMock(return_value=20)
     expected_result = {'ris_id': 'MED_N20/3GPPNBI/20.0.0.390', 'ris_component': '3GPPNBI', 'promotion_date': 20, 'promotion_time': 7 / 3600, 'commit_date': 13}
-    self.assertEqual(self.history.get_promotion_history(), expected_result)
+    self.assertEqual(self.history.get(), expected_result)
     self.history.get_status_list = orig_get_status_list
     
 
@@ -96,9 +96,9 @@ class TestRisComponentPromotionHistory(unittest.TestCase):
   def test_get_versions(self):
     orig = self.history.download_file
     self.history.download_file = MagicMock(return_value=True)
-    expected_list = ['20.0.0.400', '20.0.0.401', '20.0.0.398']
+    expected_list = ['20.0.0.401']
     expected_list.sort()
-    self.assertEqual(self.history.get_versions(), expected_list)
+    self.assertEqual(self.history.get_versions('2020-04-24T18:30:39'), expected_list)
     self.history.download_file = orig
 
 

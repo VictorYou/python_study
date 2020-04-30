@@ -47,19 +47,6 @@ class DBConnector():
     self._cnx.close()
     
 
-  def execute(self, commands):
-    try:
-      cnx = mysql.connector.connect(user=self.user, password=self.password, port=self.port, database=self.database)
-      cursor = cnx.cursor()
-      for command in commands:
-        cursor.execute(command)
-      cursor.close()
-    except mysql.connector.Error as err:
-      log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
-    finally:
-      cnx.close()
-
-
 class FileDownloader():
   backend = '10.9.137.108'
   backend_username = 'n8'
@@ -149,15 +136,12 @@ class RisVersionPromotionHistory():
       raise CommitDateTooOld(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
     return int(date.timestamp())
     
-  def get_promotion_history(self):
+  def get(self):
     self.get_status_list()
     commit_date = self.get_commit_date_timestamp()
     promotion_date = self.get_promotion_date_timestamp()
     promotion_time = (promotion_date - commit_date) / 3600
     return {'ris_id': self._ris_id, 'ris_component': self.component, 'promotion_date': promotion_date, 'promotion_time': promotion_time, 'commit_date': commit_date}
-
-  def save_promotion_history(self):
-    pass
 
 
 class RisComponentPromotionHistory():
@@ -168,22 +152,23 @@ class RisComponentPromotionHistory():
   def download_file(self):
     FileDownloader().download_file(self._ris_group_component, self._chronological)
 
-  def get_versions(self):
+  def get_versions(self, date_after):
+    date_after = LocalTimeZone.timezone.localize(datetime.strptime(date_after, "%Y-%m-%dT%H:%M:%S"))
     with open(self._chronological) as file:
       tree = ET.parse(file)
     root = tree.getroot()
-    versions = [item.attrib['name'] for item in root]
+    versions = [ item.attrib['name'] for item in root if LocalTimeZone.timezone.localize(datetime.strptime(item.attrib['time'].split('+')[0], "%Y-%m-%dT%H:%M:%S")) > date_after ]
     versions.sort()
     return versions
 
-  def get_promotion_history(self, keys_list, date_after):
+  def get(self, keys_list, date_after):
     promotion_history = []
     self.download_file()
-    versions = self.get_versions()
+    versions = self.get_versions(date_after)
     for version in versions:
       ris_id = os.path.join(self._ris_group_component, version)
       try:
-        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get_promotion_history())
+        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get())
       except Exception as e:
         log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
 
@@ -204,7 +189,7 @@ class PromotionHistory():
 
   def get(self, keys_list, date_after):
     for ris_group_component in self.__ris_group_components:
-      self.__history += RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list, date_after)
+      self.__history += RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after)
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
     return self
 
