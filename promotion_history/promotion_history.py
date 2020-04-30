@@ -34,7 +34,7 @@ class DBConnector():
 
   def __init__(self):
     try:
-      self._cnx = mysql.connector.connect(user=self.user, password=self.password, port=self.port, database=self.database)
+      self._cnx = mysql.connector.connect(user=self.user, host=self.host, password=self.password, port=self.port, database=self.database)
       self._cursor = self._cnx.cursor()
     except mysql.connector.Error as err:
       log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
@@ -42,7 +42,7 @@ class DBConnector():
   def __enter__(self):
     return self._cursor
 
-  def __exit__(self):
+  def __exit__(self, exc_ty, exc_val, tb):
     self._cursor.close()
     self._cnx.close()
     
@@ -153,7 +153,8 @@ class RisVersionPromotionHistory():
     self.get_status_list()
     commit_date = self.get_commit_date_timestamp()
     promotion_date = self.get_promotion_date_timestamp()
-    return {'ris_id': self._ris_id, 'ris_component': self.component, 'promotion_date': promotion_date, 'promotion_time': promotion_date - commit_date, 'commit_date': commit_date}
+    promotion_time = (promotion_date - commit_date) / 3600
+    return {'ris_id': self._ris_id, 'ris_component': self.component, 'promotion_date': promotion_date, 'promotion_time': promotion_time, 'commit_date': commit_date}
 
   def save_promotion_history(self):
     pass
@@ -203,14 +204,18 @@ class PromotionHistory():
 
   def get(self, keys_list, date_after):
     for ris_group_component in self.__ris_group_components:
-      self.__history.append(RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list, date_after))
+      self.__history += RisComponentPromotionHistory(ris_group_component).get_promotion_history(keys_list, date_after)
     log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
     return self
 
   def save(self):
     with DBConnector() as d:
+      log.debug(f"lineno: {inspect.currentframe().f_lineno}, type(d): {type(d)}")
       for data in self.__history:
-        d.execute(f"insert into {self.table}(component, version, promotion_date, commit_date, promotion_time) values({data.ris_component}, {data.ris_id}, {data.promotion_date}, {data.commit_date}, {data.promotion_time})")
+        command = f"insert into {self.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
+        log.debug(f"lineno: {inspect.currentframe().f_lineno}, command: {command}")
+        d.execute(command)
+        d._cnx.commit()
     return self
 
   def cleanup(self):
