@@ -1,7 +1,9 @@
 import unittest
 import sys
 sys.path.append("..")
-from promotion_history import RisVersionPromotionHistory, RisComponentPromotionHistory, MissingStatus, CommitDateTooOld
+sys.path.append("../../common")
+from promotion_history import RisVersionPromotionHistory, RisComponentPromotionHistory
+from exceptions import MissingStatus, CommitDateTooOld
 from unittest.mock import MagicMock
 
 class TestRisVersionPromotionHistory(unittest.TestCase):

@@ -12,20 +12,20 @@ sys.path.append("../common")
 
 from datetime import datetime, timedelta
 from dbconnector import DBConnector, LocalTimeZone
-from exceptions import MissingStatus, CommitDateTooOld
+#from exceptions import MissingStatus, CommitDateTooOld
 from functools import wraps
 from log import log
 from pytz import timezone
 
 
-class DBConnectorPromotionHistory(DBConnector):
+class DBConnectorJiraTicket(DBConnector):
   def __init__(self):
-    self._database = 'promotion_history'
-    self._table = 'promotion'
+    self._database = 'jira_ticket'
+    self._table = 'jira'
     super().__init__()
 
   def create_table(self):
-    self._cursor.execute(f"create table {self._table} (component varchar(50), version varchar(80) primary key, promotion_date int(10), commit_date int(10), promotion_time int(10))")
+    self._cursor.execute(f"create table {self._table} (key varchar(50) primary key, summary varchar(80), assignee varchar(20), reporter varchar(20), from varchar(20), creation_date int(10))")
 
 class FileDownloader():
   backend = '10.9.137.108'
@@ -156,31 +156,40 @@ class RisComponentPromotionHistory():
     return promotion_history
 
 
-class PromotionHistory():
-  config_file = "ris_group_components.txt"
-  table = 'promotion'
+class JiraTicket():
+  config_file = "reporters_chengdu.txt"
+  result_file = "result.csv"
 
   def __init__(self):
-    self.__ris_group_components, self.__history = [], []
+    self._reporters_chengdu = []
     with open(self.config_file) as file:
       for line in file:
-        self.__ris_group_components.append(line.strip())
-    log.debug(f"lineno: {inspect.currentframe().f_lineno}, ris_group_components: {self.__ris_group_components}")
+        self._reporters_chengdu += line.strip().split(',')
+        log.debug(f"lineno: {inspect.currentframe().f_lineno}, reporters_chengdu: {self._reporters_chengdu}")
 
-  def get(self, keys_list, date_after):
-    for ris_group_component in self.__ris_group_components:
-      self.__history += RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after)
-    log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
+  def get(self, date_after):
+    result = []
+    with open(self.result_file) as f:
+      f_csv = csv.DictReader(f)
+      result += []
+      for r in f_csv:
+        ticket = {}
+        ticket['key'], ticket[''] = r['key']
+        
+      
+#    for ris_group_component in self.__ris_group_components:
+#      self.__history += RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after)
+#    log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
     return self
 
   def save(self):
-    with DBConnectorPromotionHistory() as d:
-      log.debug(f"lineno: {inspect.currentframe().f_lineno}, type(d): {type(d)}")
-      for data in self.__history:
-        command = f"insert into {self.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
-        log.debug(f"lineno: {inspect.currentframe().f_lineno}, command: {command}")
-        d.execute(command)
-        d._cnx.commit()
+#    with DBConnectorPromotionHistory() as d:
+#      log.debug(f"lineno: {inspect.currentframe().f_lineno}, type(d): {type(d)}")
+#      for data in self.__history:
+#        command = f"insert into {self.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
+#        log.debug(f"lineno: {inspect.currentframe().f_lineno}, command: {command}")
+#        d.execute(command)
+#        d._cnx.commit()
     return self
 
   def cleanup(self):
@@ -192,12 +201,11 @@ def main(argv=None):
   week_ago = LocalTimeZone.timezone.localize(datetime.now() + timedelta(days=-7)).strftime('%Y-%m-%dT%H:%M:%S')
 
   parser = argparse.ArgumentParser()
-  parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
   parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-18T00:33:58")
   args = parser.parse_args()
   log.debug(f"lineno: {inspect.currentframe().f_lineno}, args: {args}")
 
-  PromotionHistory().get(args.keys_list, args.date_after).save().cleanup()
+  JiraTicket().get(args.date_after).save().cleanup()
 
 
 if __name__ == "__main__":
