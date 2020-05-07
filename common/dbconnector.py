@@ -20,12 +20,12 @@ class DBConnector():
   def __init__(self):
     try:
       self.check_database()
-      self._cnx = mysql.connector.connect(user=self.user, host=self.host, password=self.password, port=self.port, database=self._database)
+      self._cnx = mysql.connector.connect(user=self.user, host=self.host, password=self.password, port=self.port, database=self.database)
       self._cursor = self._cnx.cursor()
-      if not self._table in self.tables():
+      if not self.table in self.tables():
         self.create_table()
-    except mysql.connector.Error as err:
-      log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+    except mysql.connector.Error as e:
+      log.debug(f"file: {__file__}, lineno: {inspect.currentframe().f_lineno}: {type(e)}, {e.args}, {e}, {e.__doc__}")
 
   def check_database(self):
     dbs = []
@@ -35,8 +35,8 @@ class DBConnector():
     cursor.execute("show databases")
     for (db) in cursor:
       dbs.append(db[0])
-    if not self._database in dbs:
-      cursor.execute(f"create database {self._database}")
+    if not self.database in dbs:
+      cursor.execute(f"create database {self.database}")
     cursor.close()
     cnx.close()
 
@@ -44,7 +44,7 @@ class DBConnector():
     tables = []
     self._cursor.execute("show tables")
     for (table) in self._cursor:
-      tables.append(db[0])
+      tables.append(table[0])
     return tables 
 
   def __enter__(self):

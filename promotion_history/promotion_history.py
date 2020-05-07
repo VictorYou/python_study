@@ -19,13 +19,11 @@ from pytz import timezone
 
 
 class DBConnectorPromotionHistory(DBConnector):
-  def __init__(self):
-    self._database = 'promotion_history'
-    self._table = 'promotion'
-    super().__init__()
+  database = 'promotion_history'
+  table = 'promotion'
 
   def create_table(self):
-    self._cursor.execute(f"create table {self._table} (component varchar(50), version varchar(80) primary key, promotion_date int(10), commit_date int(10), promotion_time int(10))")
+    self._cursor.execute(f"create table {self.table} (component varchar(50), version varchar(80) primary key, promotion_date int(10), commit_date int(10), promotion_time int(10))")
 
 class FileDownloader():
   backend = '10.9.137.108'
@@ -158,7 +156,6 @@ class RisComponentPromotionHistory():
 
 class PromotionHistory():
   config_file = "ris_group_components.txt"
-  table = 'promotion'
 
   def __init__(self):
     self.__ris_group_components, self.__history = [], []
@@ -177,7 +174,7 @@ class PromotionHistory():
     with DBConnectorPromotionHistory() as d:
       log.debug(f"lineno: {inspect.currentframe().f_lineno}, type(d): {type(d)}")
       for data in self.__history:
-        command = f"insert into {self.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
+        command = f"insert into {DBConnectorPromotionHistory.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
         log.debug(f"lineno: {inspect.currentframe().f_lineno}, command: {command}")
         d.execute(command)
         d._cnx.commit()
@@ -193,7 +190,7 @@ def main(argv=None):
 
   parser = argparse.ArgumentParser()
   parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
-  parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-18T00:33:58")
+  parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-01T00:33:58")
   args = parser.parse_args()
   log.debug(f"lineno: {inspect.currentframe().f_lineno}, args: {args}")
 

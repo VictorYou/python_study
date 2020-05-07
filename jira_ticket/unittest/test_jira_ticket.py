@@ -6,20 +6,48 @@ sys.path.append("../../common")
 from jira_ticket import JiraTicket
 
 class TestJiraTicket(unittest.TestCase):
+  maxDiff = None
   jira_ticket = JiraTicket()
   
   def test_init(self):
-    expected_result = ['asangwan', 'caiyzhan', 'carhe', 'dalbu']
+    expected_result = ['asangwan', 'caiyzhan', 'carhe', 'dalbu', 'kuni', 'wendywan']
     expected_result.sort()
     self.assertEqual(self.jira_ticket._reporters_chengdu, expected_result)
 
-  def test_get(self):
-    expected_result = [
-      {'key': 'OSSSUP-88094', 'Summary': 'CLAB856 scratch install failed with N19 P8 build', 'assignee': 'w2yu', 'reporter': 'wendywan', 'from': 'Chengdu', 'creation_date': '1588242180'}, 
-      {'key': 'OSSSUP-88092', 'Summary': 'Unplanned SW upgrade,lab upgrades are failing on CLAB1378', 'assignee': 'w2yu', 'reporter': 'sbhargav', 'from': 'Others', 'creation_date': '1588213200'}
+  def test_get_tickets(self):
+    expected_tickets = [
+      {'Issue key': 'OSSSUP-88094', 'Summary': 'CLAB856s scratch install ', 'Assignee': 'w2yu', 'Reporter': 'wendywan', 'From': 'Chengdu', 'Created': 1585688400}, 
+      {'Issue key': 'OSSSUP-88093', 'Summary': 'clab3423 install to NetAc', 'Assignee': 'w2yu', 'Reporter': 'kuni', 'From': 'Chengdu', 'Created': 1583013600}, 
+      {'Issue key': 'OSSSUP-88092', 'Summary': 'lab upgrades are failing ', 'Assignee': 'w2yu', 'Reporter': 'sbhargav', 'From': 'Others', 'Created': 1580508000},
+      {'Issue key': 'OSSSUP-88086', 'Summary': '[CLAB849] Application Ini', 'Assignee': 'w2yu', 'Reporter': 'tedkim', 'From': 'Others', 'Created': 1580508000},
     ]
-    expected_result = sorted(list, key=lambda k: k['key'])
-    self.assertEqual(self.jira_ticket.get(), expected_result)
+    expected_tickets = sorted(expected_tickets, key=lambda k: k['Issue key'])
+    expected_created = [1580508000, 1583013600, 1585688400]
+    self.jira_ticket.get_tickets()
+    self.assertEqual(self.jira_ticket._tickets, expected_tickets)
+    self.assertEqual(self.jira_ticket._created, expected_created)
+
+  def test_get_counts(self):
+    tickets_old = self.jira_ticket._tickets
+    created_old = self.jira_ticket._created
+    self.jira_ticket._created = [1, 2, 3]
+    self.jira_ticket._tickets = [
+      {'Issue key': 'OSSSUP-88094', 'Summary': 'CLAB856s scratch install ', 'Assignee': 'w2yu', 'Reporter': 'wendywan', 'From': 'Chengdu', 'Created': 3}, 
+      {'Issue key': 'OSSSUP-88093', 'Summary': 'clab3423 install to NetAc', 'Assignee': 'w2yu', 'Reporter': 'kuni', 'From': 'Chengdu', 'Created': 2}, 
+      {'Issue key': 'OSSSUP-88092', 'Summary': 'lab upgrades are failing ', 'Assignee': 'w2yu', 'Reporter': 'sbhargav', 'From': 'Others', 'Created': 1},
+      {'Issue key': 'OSSSUP-88086', 'Summary': '[CLAB849] Application Ini', 'Assignee': 'w2yu', 'Reporter': 'tedkim', 'From': 'Others', 'Created': 1},
+    ]
+    expected = [
+      {'location': 'Others', 'creation_date': 1, 'count': 2},
+      {'location': 'Chengdu', 'creation_date': 2, 'count': 1},
+      {'location': 'Chengdu', 'creation_date': 3, 'count': 1},
+    ]
+    expected = sorted(expected, key=lambda k: k['creation_date'])
+    print(f"created: {self.jira_ticket._created}")
+    self.jira_ticket.get_counts()
+    self.assertEqual(self.jira_ticket._counts, expected)
+    self.jira_ticket._tickets = tickets_old
+    self.jira_ticket._created = created_old
 
 
 if __name__ == '__main__':
