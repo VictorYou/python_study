@@ -41,16 +41,24 @@ class DBConnectorJiraTicketCount(DBConnectorJiraTicket):
 
 
 class JiraTicket():
-  config_file = "reporters_chengdu.txt"
+  config_file_reporters_chengdu = "reporters_chengdu.txt"
+  config_file_reporters_lab = "reporters_lab.txt"
   result_file = "result.csv"
   summary_len = 25
 
   def __init__(self):
-    self._reporters_chengdu, self._tickets, self._created, self._counts = [], [], [], []
-    with open(self.config_file) as file:
+    self._reporters_chengdu, self._reporters_lab = [], [] 
+    self._tickets, self._created, self._counts = [], [], []
+    with open(self.config_file_reporters_chengdu) as file:
       for line in file:
         self._reporters_chengdu += line.strip().split(',')
         log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: reporters_chengdu: {self._reporters_chengdu}")
+    self._reporters_chengdu.sort()    
+    with open(self.config_file_reporters_lab) as file:
+      for line in file:
+        self._reporters_lab += line.strip().split(',')
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: reporters_chengdu: {self._reporters_chengdu}")
+    self._reporters_lab.sort()    
 
   def get(self, data_after):
     self.get_tickets()
@@ -63,6 +71,8 @@ class JiraTicket():
       f_csv = csv.DictReader(f)
       result += []
       for r in f_csv:
+        if r['Reporter'] in self._reporters_lab:
+          continue
         ticket = {}
         for key in ['Issue key', 'Summary', 'Assignee', 'Reporter']:
           ticket[key] = r[key]

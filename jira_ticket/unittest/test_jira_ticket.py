@@ -10,9 +10,12 @@ class TestJiraTicket(unittest.TestCase):
   jira_ticket = JiraTicket()
   
   def test_init(self):
-    expected_result = ['asangwan', 'caiyzhan', 'carhe', 'dalbu', 'kuni', 'wendywan']
-    expected_result.sort()
-    self.assertEqual(self.jira_ticket._reporters_chengdu, expected_result)
+    expected_reporters_lab = ['magrocho', 'junlili']
+    expected_reporters_lab.sort()
+    self.assertEqual(self.jira_ticket._reporters_lab, expected_reporters_lab)
+    expected_reporters_chengdu = ['asangwan', 'caiyzhan', 'carhe', 'dalbu', 'kuni', 'wendywan']
+    expected_reporters_chengdu.sort()
+    self.assertEqual(self.jira_ticket._reporters_chengdu, expected_reporters_chengdu)
 
   def test_get_tickets(self):
     expected_tickets = [

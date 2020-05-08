@@ -3,3 +3,4 @@ OSSSUP-88094,1988685,,Scratch installation,CLAB856's scratch install failed with
 OSSSUP-88093,1988675,,Integration request,clab3423 install to NetAct19 P8,w2yu,kuni,Minor,Closed,Fixed,29.3.2020 10:13,6.5.2020 8:56,,,,
 OSSSUP-88092,1988560,,Unplanned SW upgrade,lab upgrades are failing on CLAB1378,w2yu,sbhargav,Minor,Closed,Fixed,28.2.2020 2:20,30.4.2020 16:56,,,,
 OSSSUP-88086,1988144,,Other,[CLAB849] Application Initialization Error in CM Operations Manager,w2yu,tedkim,Minor,Closed,Fixed,27.2.2020 17:00,30.1.2020 14:02,,,,
+OSSSUP-88087,1988144,,Other,created by Li Junlin,w2yu,junlili,Minor,Closed,Fixed,27.2.2020 17:00,30.1.2020 14:02,,,,
