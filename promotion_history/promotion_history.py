@@ -13,6 +13,7 @@ sys.path.append("../common")
 from datetime import datetime, timedelta
 from dbconnector import DBConnector, LocalTimeZone
 from exceptions import MissingStatus, CommitDateTooOld
+from filedownloader import FileDownloader
 from functools import wraps
 from log import log
 from pytz import timezone
@@ -24,27 +25,6 @@ class DBConnectorPromotionHistory(DBConnector):
 
   def create_table(self):
     self._cursor.execute(f"create table {self.table} (component varchar(50), version varchar(80) primary key, promotion_date int(10), commit_date int(10), promotion_time int(10))")
-
-class FileDownloader():
-  backend = '10.9.137.108'
-  backend_username = 'n8'
-  backend_password = '8n'
-  package_home = '/opt/mpp/packages/'
-
-  def download_file(self, prefix, file):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(self.backend, username=self.backend_username, password=self.backend_password, look_for_keys=False, timeout=60)
-    sftp_client = ssh.open_sftp()
-    file_path = os.path.join(self.package_home, prefix, file)
-    log.debug(f'lineno: {inspect.currentframe().f_lineno}, file_path: {file_path}')
-    try:
-      sftp_client.get(file_path, file)
-    except IOError as e:
-      log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
-      raise e
-    finally:
-      sftp_client.close()
 
 
 class RisVersionPromotionHistory():
@@ -93,7 +73,7 @@ class RisVersionPromotionHistory():
           timestamps.append(status[key])
       if len(timestamps) == 0:
         raise MissingStatus(f'lineno: {inspect.currentframe().f_lineno}, missing status: {keys}')
-      log.debug(f'lineno: {inspect.currentframe().f_lineno}, timestamps: {timestamps}')
+      log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: timestamps: {timestamps}')
       timestamps.sort()
       latest_timestamps.append(timestamps[0])
     latest_timestamps.sort()
@@ -108,8 +88,8 @@ class RisVersionPromotionHistory():
   def get_commit_date_timestamp(self):
     commit_date = self.get_commit_date().split('+')[0]
     date = LocalTimeZone.timezone.localize(datetime.strptime(commit_date, "%Y-%m-%dT%H:%M:%S"))
-    log.debug(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
-    log.debug(f'lineno: {inspect.currentframe().f_lineno}, self._date_after: {self._date_after}')
+    log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: date: {date}')
+    log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: self._date_after: {self._date_after}')
     if date < self._date_after:
       raise CommitDateTooOld(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
     return int(date.timestamp())
@@ -148,9 +128,9 @@ class RisComponentPromotionHistory():
       try:
         promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get())
       except Exception as e:
-        log.debug(f"lineno: {inspect.currentframe().f_lineno}, exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
 
-    log.debug(f"lineno: {inspect.currentframe().f_lineno}, promotion_history: {promotion_history}")
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: promotion_history: {promotion_history}")
     return promotion_history
 
 
@@ -162,20 +142,20 @@ class PromotionHistory():
     with open(self.config_file) as file:
       for line in file:
         self.__ris_group_components.append(line.strip())
-    log.debug(f"lineno: {inspect.currentframe().f_lineno}, ris_group_components: {self.__ris_group_components}")
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: ris_group_components: {self.__ris_group_components}")
 
   def get(self, keys_list, date_after):
     for ris_group_component in self.__ris_group_components:
       self.__history += RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after)
-    log.debug(f"lineno: {inspect.currentframe().f_lineno}, self.__history: {self.__history}")
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: self.__history: {self.__history}")
     return self
 
   def save(self):
     with DBConnectorPromotionHistory() as d:
-      log.debug(f"lineno: {inspect.currentframe().f_lineno}, type(d): {type(d)}")
+      log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: type(d): {type(d)}")
       for data in self.__history:
         command = f"insert into {DBConnectorPromotionHistory.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
-        log.debug(f"lineno: {inspect.currentframe().f_lineno}, command: {command}")
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
         d.execute(command)
         d._cnx.commit()
     return self
@@ -192,7 +172,7 @@ def main(argv=None):
   parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
   parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-01T00:33:58")
   args = parser.parse_args()
-  log.debug(f"lineno: {inspect.currentframe().f_lineno}, args: {args}")
+  log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: args: {args}")
 
   PromotionHistory().get(args.keys_list, args.date_after).save().cleanup()
 
