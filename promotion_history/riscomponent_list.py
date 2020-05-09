@@ -20,16 +20,8 @@ from pytz import timezone
 from ris_info import RisVersionInfo, RisComponentHistory
 
 
-class DBConnectorPromotionHistory(DBConnector):
-  database = 'promotion_history'
-  table = 'promotion'
-
-  def create_table(self):
-    self._cursor.execute(f"create table {self.table} (component varchar(50), version varchar(80) primary key, promotion_date int(10), commit_date int(10), promotion_time int(10))")
-
-
-class RisVersionPromotionHistory(RisVersionInfo):
-  def __init__(self, ris_id, keys_list, date_after):
+class RisVersionDependency(RisVersionInfo):
+  def __init__(self, ris_id):
     super().__init__(ris_id)
     self._ris_status_file = f'{self.group}-{self.component}-{self.version}-status.xml'
     self._files_to_download = [self._ris_status_file, self.ris_file]
@@ -96,46 +88,27 @@ class RisVersionPromotionHistory(RisVersionInfo):
     return {'ris_id': self._ris_id, 'ris_component': self.component, 'promotion_date': promotion_date, 'promotion_time': promotion_time, 'commit_date': commit_date}
 
 
-class RisComponentPromotionHistory(RisComponentHistory):
-  def get(self, keys_list, date_after):
-    promotion_history = []
+class RisComponentLatestVersion(RisComponentHistory):
+  def get(self, date_after):
+    ris_list = []
     self.download_file()
     versions = self.get_versions(date_after)
-    for version in versions:
-      ris_id = os.path.join(self._ris_group_component, version)
-      try:
-        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get())
-      except Exception as e:
-        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
-
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: promotion_history: {promotion_history}")
-    return promotion_history
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: versions: {versions}")
+    ris_version = os.path.join(self._ris_group_component, versions[0])
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: ris_version: {ris_version}")
+    return []
+#    return RisVersionDependency(ris_version)
 
 
-class PromotionHistory():
-  config_file = "ris_group_components.txt"
-
+class LatestNetActProduct():
   def __init__(self):
-    self.__ris_group_components, self.__history = [], []
-    with open(self.config_file) as file:
-      for line in file:
-        self.__ris_group_components.append(line.strip())
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: ris_group_components: {self.__ris_group_components}")
+    self.__dependency = []
 
-  def get(self, keys_list, date_after):
-    for ris_group_component in self.__ris_group_components:
-      self.__history += RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after)
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: self.__history: {self.__history}")
+  def get(self, date_after):
+    self.__dependency = RisComponentLatestVersion('netact/product').get(date_after)
     return self
 
   def save(self):
-    with DBConnectorPromotionHistory() as d:
-      log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: type(d): {type(d)}")
-      for data in self.__history:
-        command = f"insert into {DBConnectorPromotionHistory.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
-        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
-        d.execute(command)
-        d._cnx.commit()
     return self
 
   def cleanup(self):
@@ -147,12 +120,11 @@ def main(argv=None):
   week_ago = LocalTimeZone.timezone.localize(datetime.now() + timedelta(days=-7)).strftime('%Y-%m-%dT%H:%M:%S')
 
   parser = argparse.ArgumentParser()
-  parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
   parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-01T00:33:58")
   args = parser.parse_args()
   log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: args: {args}")
 
-  PromotionHistory().get(args.keys_list, args.date_after).save().cleanup()
+  LatestNetActProduct().get(args.date_after).save().cleanup()
 
 
 if __name__ == "__main__":
