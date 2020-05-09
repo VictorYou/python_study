@@ -1,8 +1,12 @@
 import unittest
+import os
 import sys
+
 sys.path.append("..")
 sys.path.append("../../common")
+
 from promotion_history import RisVersionPromotionHistory, RisComponentPromotionHistory
+from riscomponent_list import RisVersionCommitter, RisVersionDependencyVersion
 from exceptions import MissingStatus, CommitDateTooOld
 from unittest.mock import MagicMock
 
@@ -68,6 +72,7 @@ class TestRisVersionPromotionHistory(unittest.TestCase):
     self.history.get_status_list_timestamp = orig
 
   def test_get_commit_date(self):
+    os.system("cp ris_RisVersionPromotionHistory.xml ris.xml")
     self.assertEqual(self.history.get_commit_date(), '2020-04-17T08:07:20+03:00')
 
   def test_get_commit_date_timestamp(self):
@@ -102,6 +107,25 @@ class TestRisComponentPromotionHistory(unittest.TestCase):
     expected_list.sort()
     self.assertEqual(self.history.get_versions('2020-04-24T18:30:39'), expected_list)
     self.history.download_file = orig
+
+
+class TestRisVersionCommitter(unittest.TestCase):
+  committer = RisVersionCommitter('MED_N20/3GPPNBI/20.0.0.390')
+  def test_get(self):
+    os.system('cp ris_RisVersionCommitter.xml ris.xml')
+    self.committer.download_files = MagicMock(return_value=True)
+    self.assertEqual(self.committer.get(), 'stone.1.shi@nokia-sbell.com')
+    os.system('rm -rf ris.xml')
+
+class TestRisVersionDependencyVersion(unittest.TestCase):
+  dependency_version = RisVersionDependencyVersion('MED_N20/3GPPNBI/20.0.0.390')
+  def test_get(self):
+    os.system('cp ris_RisVersionDependencyVersion.xml ris.xml')
+    self.dependency_version.download_files = MagicMock(return_value=True)
+    expected = ['adaptations-2/ADAP_2G_10/19.0.0.10', 'adaptations-2/ADAP_2GASBSC_11/19.1.0.13']
+    expected.sort()
+    self.assertEqual(self.dependency_version.get(), expected)
+    os.system('rm -rf ris.xml')
 
 
 if __name__ == '__main__':

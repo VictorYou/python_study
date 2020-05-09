@@ -1,0 +1,14 @@
+<ris-metadata creation='2020-05-09T09:23:29+03:00'
+><risid component='product' group='netact' version='99.20.05.0.100'
+  /><dependency name='2g_adap_10' path='adap_2g_10'
+  ><risid component='ADAP_2G_10' group='adaptations-2' version='19.0.0.10'
+    /></dependency
+  ><dependency name='2gasbsc_adap_11' path='adap_2gasbsc_11'
+  ><risid component='ADAP_2GASBSC_11' group='adaptations-2' version='19.1.0.13'
+    /></dependency
+  ><fileset
+  ><file size='34' path='netact-release' file_hash='95542d10037652921dbd08c35135496d8253c7c0779b0d4536bcd62d9800fe8b6220b9e46c597a46558f2a29f80bd15f82c133f082795480fa93c64df4f2b563'
+    /><file size='1820637' path='source_info.json' file_hash='44e2c8a8428a3e48f7947618f8013e3df1e29075cd6820beaccb84430423e17ceb2619b90fbcd6eb407f80d2bee20b178872f533fa83cd30c2d712a134b5475c'
+    /></fileset
+  ></ris-metadata
+>
