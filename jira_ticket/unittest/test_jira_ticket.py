@@ -40,15 +40,18 @@ class TestJiraTicket(unittest.TestCase):
       {'Issue key': 'OSSSUP-88092', 'Summary': 'lab upgrades are failing ', 'Assignee': 'w2yu', 'Reporter': 'sbhargav', 'From': 'Others', 'Created': 1},
       {'Issue key': 'OSSSUP-88086', 'Summary': '[CLAB849] Application Ini', 'Assignee': 'w2yu', 'Reporter': 'tedkim', 'From': 'Others', 'Created': 1},
     ]
-    expected = [
-      {'location': 'Others', 'creation_date': 1, 'count': 2},
+    expected_chengdu = [
       {'location': 'Chengdu', 'creation_date': 2, 'count': 1},
       {'location': 'Chengdu', 'creation_date': 3, 'count': 1},
     ]
-    expected = sorted(expected, key=lambda k: k['creation_date'])
+    expected_others = [
+      {'location': 'Others', 'creation_date': 1, 'count': 2},
+    ]
+    expected_chengdu = sorted(expected_chengdu, key=lambda k: k['creation_date'])
     print(f"created: {self.jira_ticket._created}")
     self.jira_ticket.get_counts()
-    self.assertEqual(self.jira_ticket._counts, expected)
+    self.assertEqual(self.jira_ticket._chengdu_counts, expected_chengdu)
+    self.assertEqual(self.jira_ticket._others_counts, expected_others)
     self.jira_ticket._tickets = tickets_old
     self.jira_ticket._created = created_old
 

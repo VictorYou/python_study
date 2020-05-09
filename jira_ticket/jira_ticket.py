@@ -24,18 +24,26 @@ class DBConnectorJiraTicket(DBConnector):
 
 
 class DBConnectorJiraTicketJira(DBConnectorJiraTicket):
-  table = 'jira_ticket'
+  table = 'ticket'
 
   def create_table(self):
     command = f"create table {self.table} (id varchar(50) primary key, summary varchar(80), assignee varchar(20), reporter varchar(20), location varchar(20), creation_date int(10))"
     log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
     self._cursor.execute(f"{command}")
 
-class DBConnectorJiraTicketCount(DBConnectorJiraTicket):
-  table = 'jira_count'
+class DBConnectorJiraTicketChengduCount(DBConnectorJiraTicket):
+  table = 'chengdu_count'
 
   def create_table(self):
-    command = f"create table {self.table} (id varchar(50) primary key, location varchar(20), creation_date int(10), count int(10))"
+    command = f"create table {self.table} (creation_date int(10) primary key, location varchar(20), count int(10))"
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
+    self._cursor.execute(f"{command}")
+
+class DBConnectorJiraTicketOthersCount(DBConnectorJiraTicket):
+  table = 'others_count'
+
+  def create_table(self):
+    command = f"create table {self.table} (creation_date int(10) primary key, location varchar(20), count int(10))"
     log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
     self._cursor.execute(f"{command}")
 
@@ -48,7 +56,7 @@ class JiraTicket():
 
   def __init__(self):
     self._reporters_chengdu, self._reporters_lab = [], [] 
-    self._tickets, self._created, self._counts = [], [], []
+    self._tickets, self._created, self._chengdu_counts, self._others_counts = [], [], [], []
     with open(self.config_file_reporters_chengdu) as file:
       for line in file:
         self._reporters_chengdu += line.strip().split(',')
@@ -94,11 +102,14 @@ class JiraTicket():
   def get_counts(self):
     log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: self._created: {self._created}")
     for created in self._created:
-      for location in ['Chengdu', 'Others']:
-        list = [d for d in self._tickets if d['Created'] == created and d['From'] == location]
-        if len(list) > 0:
-          self._counts.append({'location': location, 'creation_date': created, 'count': len(list)})
-    self._counts = sorted(self._counts, key=lambda k: k['creation_date'])
+      list = [d for d in self._tickets if d['Created'] == created and d['From'] == 'Chengdu']
+      if len(list) > 0:
+        self._chengdu_counts.append({'location': 'Chengdu', 'creation_date': created, 'count': len(list)})
+      list = [d for d in self._tickets if d['Created'] == created and d['From'] == 'Others']
+      if len(list) > 0:
+        self._others_counts.append({'location': 'Others', 'creation_date': created, 'count': len(list)})
+    self._chengdu_counts = sorted(self._chengdu_counts, key=lambda k: k['creation_date'])
+    self._others_counts = sorted(self._others_counts, key=lambda k: k['creation_date'])
         
   def save(self):
     self.save_jira()
@@ -116,11 +127,19 @@ class JiraTicket():
     return self
 
   def save_count(self):
-    with DBConnectorJiraTicketCount() as d:
+    with DBConnectorJiraTicketChengduCount() as d:
       log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: type(d): {type(d)}")
-      for data in self._counts:
+      for data in self._chengdu_counts:
         log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: data: {data}")
-        command = f"insert into {DBConnectorJiraTicketCount.table}(id, location, creation_date, count) values('{data['location']}_{data['creation_date']}', '{data['location']}', {data['creation_date']}, {data['count']}) on duplicate key update location='{data['location']}', creation_date={data['creation_date']}, count={data['count']}"
+        command = f"insert into {DBConnectorJiraTicketChengduCount.table}(creation_date, location, count) values({data['creation_date']}, '{data['location']}', {data['count']}) on duplicate key update location='{data['location']}', count={data['count']}"
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
+        d.execute(command)
+        d._cnx.commit()
+    with DBConnectorJiraTicketOthersCount() as d:
+      log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: type(d): {type(d)}")
+      for data in self._others_counts:
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: data: {data}")
+        command = f"insert into {DBConnectorJiraTicketOthersCount.table}(creation_date, location, count) values({data['creation_date']}, '{data['location']}', {data['count']}) on duplicate key update location='{data['location']}', count={data['count']}"
         log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
         d.execute(command)
         d._cnx.commit()
