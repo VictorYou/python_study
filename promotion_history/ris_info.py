@@ -19,6 +19,7 @@ from pytz import timezone
 
 class RisVersionInfo():
   ris_file = 'ris.xml'
+  package_home = '/opt/mpp/packages/'
 
   def __init__(self, ris_id):
     self._ris_id = ris_id
@@ -27,17 +28,33 @@ class RisVersionInfo():
 
   def download_files(self):
     prefix = os.path.join(self._ris_id)
-    for file in self._files_to_download:
-      FileDownloader().download_file(prefix, file)
+    with FileDownloader() as sftp_client:
+      for file in self._files_to_download:
+        try:
+          file_path = os.path.join(self.package_home, prefix, file)
+          log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: file_path: {file_path}')
+          sftp_client.get(file_path, file)
+        except IOError as e:
+          log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+          raise e
 
 
 class RisComponentHistory():
+  package_home = '/opt/mpp/packages/'
+
   def __init__(self, ris_group_component):
     self._ris_group_component = ris_group_component
     self._chronological = "chronological.xml"
 
   def download_file(self):
-    FileDownloader().download_file(self._ris_group_component, self._chronological)
+    file_path = os.path.join(self.package_home, self._ris_group_component, self._chronological)
+    log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: file_path: {file_path}')
+    with FileDownloader() as sftp_client:
+      try:
+        sftp_client.get(file_path, self._chronological)
+      except IOError as e:
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+        raise e
 
   def get_versions(self, date_after):
     date_after = LocalTimeZone.timezone.localize(datetime.strptime(date_after, "%Y-%m-%dT%H:%M:%S"))
