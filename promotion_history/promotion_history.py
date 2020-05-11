@@ -14,6 +14,7 @@ sys.path.append("../common")
 from datetime import datetime, timedelta
 from dbconnector import DBConnector, LocalTimeZone
 from exceptions import MissingStatus, CommitDateTooOld
+from filedownloader import FileDownloader
 from functools import wraps
 from log import log
 from pytz import timezone
@@ -29,8 +30,9 @@ class DBConnectorPromotionHistory(DBConnector):
 
 
 class RisVersionPromotionHistory(RisVersionInfo):
-  def __init__(self, ris_id, keys_list, date_after):
+  def __init__(self, ris_id, keys_list, date_after, sftp_client):
     super().__init__(ris_id)
+    self._sftp_client = sftp_client
     self._ris_status_file = f'{self.group}-{self.component}-{self.version}-status.xml'
     self._files_to_download = [self._ris_status_file, self.ris_file]
     self._status_keys_list = []
@@ -102,17 +104,18 @@ class RisComponentPromotionHistory(RisComponentHistory):
     super().__init__(ris_group_component)
 
   def get(self, keys_list, date_after):
-    self.download_file()
-    versions = self.get_versions(date_after)
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: versions: {versions}")
-    for version in versions:
-      ris_id = os.path.join(self._ris_group_component, version)
-      try:
-        self._promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get())
-      except Exception as e:
-        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
-
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: promotion_history: {self._promotion_history}")
+    with FileDownloader() as sftp_client:
+      self.download_file(sftp_client)
+      versions = self.get_versions(date_after)
+      log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: versions: {versions}")
+      for version in versions:
+        ris_id = os.path.join(self._ris_group_component, version)
+        try:
+          self._promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after, sftp_client).get())
+        except Exception as e:
+          log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+  
+      log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: promotion_history: {self._promotion_history}")
     return self
 
   def save(self):

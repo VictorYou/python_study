@@ -28,15 +28,14 @@ class RisVersionInfo():
 
   def download_files(self):
     prefix = os.path.join(self._ris_id)
-    with FileDownloader() as sftp_client:
-      for file in self._files_to_download:
-        try:
-          file_path = os.path.join(self.package_home, prefix, file)
-          log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: file_path: {file_path}')
-          sftp_client.get(file_path, file)
-        except IOError as e:
-          log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
-          raise e
+    for file in self._files_to_download:
+      try:
+        file_path = os.path.join(self.package_home, prefix, file)
+        log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: file_path: {file_path}')
+        self._sftp_client.get(file_path, file)
+      except IOError as e:
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+        raise e
 
 
 class RisComponentHistory():
@@ -46,15 +45,14 @@ class RisComponentHistory():
     self._ris_group_component = ris_group_component
     self._chronological = "chronological.xml"
 
-  def download_file(self):
+  def download_file(self, sftp_client):
     file_path = os.path.join(self.package_home, self._ris_group_component, self._chronological)
     log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: file_path: {file_path}')
-    with FileDownloader() as sftp_client:
-      try:
-        sftp_client.get(file_path, self._chronological)
-      except IOError as e:
-        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
-        raise e
+    try:
+      sftp_client.get(file_path, self._chronological)
+    except IOError as e:
+      log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
+      raise e
 
   def get_versions(self, date_after):
     date_after = LocalTimeZone.timezone.localize(datetime.strptime(date_after, "%Y-%m-%dT%H:%M:%S"))
