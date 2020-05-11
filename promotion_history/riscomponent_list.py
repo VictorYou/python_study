@@ -1,4 +1,5 @@
 import argparse
+import csv
 import inspect
 import logging
 import mysql.connector
@@ -30,7 +31,11 @@ class RisVersionCommitter(RisVersionInfo):
     with open(self.ris_file) as file:
       tree = ET.parse(file)
     root = tree.getroot()
-    return [elem.attrib for elem in root if elem.tag == 'buildsource'][0]['lastCommiter']
+    result = [elem.attrib for elem in root if elem.tag == 'buildsource']
+    if len(result) > 0 and 'lastCommiter' in result[0]:
+      return result[0]['lastCommiter']
+    else:
+      return 'Unknown'
 
 
 class RisVersionDependencyVersion(RisVersionInfo):
@@ -43,7 +48,9 @@ class RisVersionDependencyVersion(RisVersionInfo):
     with open(self.ris_file) as file:
       tree = ET.parse(file)
     root = tree.getroot()
-    return True
+    result = [os.path.join(x[0].attrib['group'], x[0].attrib['component'], x[0].attrib['version']) for x in root if x.tag == 'dependency']
+    result.sort()
+    return result
 
 
 class RisComponentLatestVersion(RisComponentHistory):
@@ -59,19 +66,25 @@ class RisComponentLatestVersion(RisComponentHistory):
 
 class LatestNetActProductDependency():
   def __init__(self):
-    self.__dependency_version = []
+    self.__dependency_versions = []
 
   def get(self, date_after):
     latest_ris_version = RisComponentLatestVersion('netact/product').get(date_after)
-    RisVersionDependencyVersion(latest_ris_version)
+    ris_versions = RisVersionDependencyVersion(latest_ris_version).get()
+    for ris_version in ris_versions:
+      self.__dependency_versions.append((ris_version.split('/')[0], ris_version.split('/')[1], ris_version.split('/')[2], RisVersionCommitter(ris_version).get()))
     return self
 
   def save(self):
+    headers = ['group', 'component', 'version', 'committer']
+    with open('ris_group_components_all.txt', 'w') as f:
+      f_csv = csv.writer(f)
+      f_csv.writerow(headers)
+      f_csv.writerows(self.__dependency_versions)
     return self
 
   def cleanup(self):
-    pass
-#    os.system('rm *.xml')
+    os.system('rm *.xml')
         
 
 def main(argv=None):

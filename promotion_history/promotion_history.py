@@ -1,4 +1,5 @@
 import argparse
+import csv
 import inspect
 import logging
 import mysql.connector
@@ -97,41 +98,27 @@ class RisVersionPromotionHistory(RisVersionInfo):
 
 
 class RisComponentPromotionHistory(RisComponentHistory):
+  def __init__(self, ris_group_component):
+    self._promotion_history = []
+    super().__init__(ris_group_component)
+
   def get(self, keys_list, date_after):
-    promotion_history = []
     self.download_file()
     versions = self.get_versions(date_after)
     for version in versions:
       ris_id = os.path.join(self._ris_group_component, version)
       try:
-        promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get())
+        self._promotion_history.append(RisVersionPromotionHistory(ris_id, keys_list, date_after).get())
       except Exception as e:
         log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: exception caught: {type(e)}, {e.args}, {e}, {e.__doc__}")
 
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: promotion_history: {promotion_history}")
-    return promotion_history
-
-
-class PromotionHistory():
-  config_file = "ris_group_components.txt"
-
-  def __init__(self):
-    self.__ris_group_components, self.__history = [], []
-    with open(self.config_file) as file:
-      for line in file:
-        self.__ris_group_components.append(line.strip())
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: ris_group_components: {self.__ris_group_components}")
-
-  def get(self, keys_list, date_after):
-    for ris_group_component in self.__ris_group_components:
-      self.__history += RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after)
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: self.__history: {self.__history}")
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: promotion_history: {self._promotion_history}")
     return self
 
   def save(self):
     with DBConnectorPromotionHistory() as d:
       log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: type(d): {type(d)}")
-      for data in self.__history:
+      for data in self._promotion_history :
         command = f"insert into {DBConnectorPromotionHistory.table}(component, version, promotion_date, commit_date, promotion_time) values('{data['ris_component']}', '{data['ris_id']}', {data['promotion_date']}, {data['commit_date']}, {data['promotion_time']}) on duplicate key update promotion_date={data['promotion_date']}, commit_date={data['commit_date']}, promotion_time={data['promotion_time']}"
         log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: command: {command}")
         d.execute(command)
@@ -140,7 +127,26 @@ class PromotionHistory():
 
   def cleanup(self):
     os.system('rm *.xml')
-        
+
+
+class PromotionHistory():
+  config_file = "ris_group_components_all.txt"
+  config_file_headers = ['group', 'component', 'version', 'committer']
+
+  def __init__(self):
+    self.__ris_group_components, self.__history = [], []
+    with open(self.config_file) as file:
+      f_csv = csv.DictReader(file)
+      for r in f_csv:
+        log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: group: {r['group']}")
+        self.__ris_group_components.append(os.path.join(r['group'], r['component']))
+    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: ris_group_components: {self.__ris_group_components}")
+
+  def get_save(self, keys_list, date_after):
+    for ris_group_component in self.__ris_group_components:
+      RisComponentPromotionHistory(ris_group_component).get(keys_list, date_after).save().cleanup()
+    return self
+
 
 def main(argv=None):
   logging.getLogger("paramiko").setLevel(logging.WARNING)
@@ -152,7 +158,7 @@ def main(argv=None):
   args = parser.parse_args()
   log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: args: {args}")
 
-  PromotionHistory().get(args.keys_list, args.date_after).save().cleanup()
+  PromotionHistory().get_save(args.keys_list, args.date_after)
 
 
 if __name__ == "__main__":

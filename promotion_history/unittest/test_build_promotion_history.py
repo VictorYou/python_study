@@ -74,6 +74,7 @@ class TestRisVersionPromotionHistory(unittest.TestCase):
   def test_get_commit_date(self):
     os.system("cp ris_RisVersionPromotionHistory.xml ris.xml")
     self.assertEqual(self.history.get_commit_date(), '2020-04-17T08:07:20+03:00')
+    os.system('rm -rf ris.xml')
 
   def test_get_commit_date_timestamp(self):
     orig = self.history.get_commit_date
