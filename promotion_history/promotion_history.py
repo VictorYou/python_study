@@ -161,7 +161,7 @@ def main(argv=None):
   parser = argparse.ArgumentParser()
   parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
   parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-01T00:33:58")
-  parser.add_argument("-f", "--config-file", dest="config_file", default='ris_group_components_all.csv"', help="ris group components file, eg: ris_group_components_all.csv")
+  parser.add_argument("-f", "--config-file", dest="config_file", default='ris_group_components_all.csv', help="ris group components file, eg: ris_group_components_all.csv")
   args = parser.parse_args()
   log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: args: {args}")
 
