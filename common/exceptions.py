@@ -4,6 +4,10 @@ class MissingStatus(Exception):
   pass
 
 
+class MissingBuildSource(Exception):
+  pass
+
+
 class CommitDateTooOld(Exception):
   pass
 

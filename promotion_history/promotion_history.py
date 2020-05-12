@@ -13,7 +13,7 @@ sys.path.append("../common")
 
 from datetime import datetime, timedelta
 from dbconnector import DBConnector, LocalTimeZone
-from exceptions import MissingStatus, CommitDateTooOld
+from exceptions import MissingStatus, CommitDateTooOld, MissingBuildSource
 from filedownloader import FileDownloader
 from functools import wraps
 from log import log
@@ -68,7 +68,7 @@ class RisVersionPromotionHistory(RisVersionInfo):
         if key in keys:
           timestamps.append(status[key])
       if len(timestamps) == 0:
-        raise MissingStatus(f'lineno: {inspect.currentframe().f_lineno}, missing status: {keys}')
+        raise MissingStatus(f'{__file__}:{inspect.currentframe().f_lineno}: missing status: {keys}')
       log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: timestamps: {timestamps}')
       timestamps.sort()
       latest_timestamps.append(timestamps[0])
@@ -79,7 +79,11 @@ class RisVersionPromotionHistory(RisVersionInfo):
     with open(self.ris_file) as file:
       tree = ET.parse(file)
     root = tree.getroot()
-    return [elem.attrib for elem in root if elem.tag == 'buildsource'][0]['lastCommitDate']
+    result = [elem for elem in root if elem.tag == 'buildsource']
+    if len(result) > 0 and 'lastCommitDate' in result[0].attrib:
+      return result[0].attrib['lastCommitDate']
+    else:
+      raise MissingBuildSource
 
   def get_commit_date_timestamp(self):
     commit_date = self.get_commit_date().split('+')[0]
@@ -87,7 +91,7 @@ class RisVersionPromotionHistory(RisVersionInfo):
     log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: date: {date}')
     log.debug(f'{__file__}:{inspect.currentframe().f_lineno}: self._date_after: {self._date_after}')
     if date < self._date_after:
-      raise CommitDateTooOld(f'lineno: {inspect.currentframe().f_lineno}, date: {date}')
+      raise CommitDateTooOld(f'{__file__}:{inspect.currentframe().f_lineno}: date: {date}')
     return int(date.timestamp())
     
   def get(self):
@@ -133,12 +137,11 @@ class RisComponentPromotionHistory(RisComponentHistory):
 
 
 class PromotionHistory():
-  config_file = "ris_group_components_all.txt"
   config_file_headers = ['group', 'component', 'version', 'committer']
 
-  def __init__(self):
+  def __init__(self, config_file):
     self.__ris_group_components, self.__history = [], []
-    with open(self.config_file) as file:
+    with open(config_file) as file:
       f_csv = csv.DictReader(file)
       for r in f_csv:
         log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: group: {r['group']}")
@@ -158,10 +161,11 @@ def main(argv=None):
   parser = argparse.ArgumentParser()
   parser.add_argument("-k", "--promotion-keys", dest="keys_list", default='component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product', help="keys list, eg: 'component_upgrade_validated_with,release_upgrade_validated_with:ready_for_product")
   parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-01T00:33:58")
+  parser.add_argument("-f", "--config-file", dest="config_file", default='ris_group_components_all.csv"', help="ris group components file, eg: ris_group_components_all.csv")
   args = parser.parse_args()
   log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: args: {args}")
 
-  PromotionHistory().get_save(args.keys_list, args.date_after)
+  PromotionHistory(args.config_file).get_save(args.keys_list, args.date_after)
 
 
 if __name__ == "__main__":

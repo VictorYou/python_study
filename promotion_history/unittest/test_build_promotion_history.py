@@ -11,7 +11,7 @@ from exceptions import MissingStatus, CommitDateTooOld
 from unittest.mock import MagicMock
 
 class TestRisVersionPromotionHistory(unittest.TestCase):
-  history = RisVersionPromotionHistory('MED_N20/3GPPNBI/20.0.0.390', 'component_upgrade_validated_with,release_upgrade_validated_with,scratch_install_validated_with:ready_for_product', '2019-04-18T04:24:57')
+  history = RisVersionPromotionHistory('MED_N20/3GPPNBI/20.0.0.390', 'component_upgrade_validated_with,release_upgrade_validated_with,scratch_install_validated_with:ready_for_product', '2019-04-18T04:24:57', 'sftp_client')
 
   def test_init(self):
     self.assertEqual(self.history._ris_id, 'MED_N20/3GPPNBI/20.0.0.390')
