@@ -27,7 +27,6 @@ class JiraResult():
     ssl._create_default_https_context = ssl._create_unverified_context
     data = urllib.parse.urlencode({"os_username": 'viyou',"os_password": 'Yh#%&(!Ss'})
     res = self._opener.open("https://srvjira.int.net.nokia.com/login.jsp", data.encode('ascii', 'ignore'))
-    log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: res: {res.read()}")
 
   def get(self, begin_date, end_date):
     url = f"https://srvjira.int.net.nokia.com/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=project+%3D+OSSSUP+AND+created+%3E%3D+{begin_date}+AND+created+%3C%3D+{end_date}+ORDER+BY+key+DESC"
