@@ -51,12 +51,12 @@ class DBConnectorJiraTicketOthersCount(DBConnectorJiraTicket):
 class JiraTicket():
   config_file_reporters_chengdu = "reporters_chengdu.txt"
   config_file_reporters_lab = "reporters_lab.txt"
-  result_file = "result.csv"
   summary_len = 25
 
-  def __init__(self):
+  def __init__(self, result_file):
     self._reporters_chengdu, self._reporters_lab = [], [] 
     self._tickets, self._created, self._chengdu_counts, self._others_counts = [], [], [], []
+    self._result_file = result_file
     with open(self.config_file_reporters_chengdu) as file:
       for line in file:
         self._reporters_chengdu += line.strip().split(',')
@@ -75,7 +75,7 @@ class JiraTicket():
 
   def get_tickets(self):
     result = []
-    with open(self.result_file) as f:
+    with open(self._result_file) as f:
       f_csv = csv.DictReader(f)
       result += []
       for r in f_csv:
@@ -84,6 +84,7 @@ class JiraTicket():
         ticket = {}
         for key in ['Issue key', 'Summary', 'Assignee', 'Reporter']:
           ticket[key] = r[key]
+        ticket['Summary'] = ticket['Summary'].encode('ascii', 'ignore').decode('utf-8')
         ticket['Summary'] = re.sub('[\'\"]', '', ticket['Summary'])
         ticket['Summary'] = ticket['Summary'][:self.summary_len]
         month_year = re.match('\d+\.(\d+\.\d+)\s+.*', r['Created']).group(1)
@@ -155,10 +156,11 @@ def main(argv=None):
 
   parser = argparse.ArgumentParser()
   parser.add_argument("-d", "--date-after", dest="date_after", default=f'{week_ago}', help="date after, eg: 2020-04-18T00:33:58")
+  parser.add_argument("-f", "--result-file", dest="result_file", default=f'result.csv', help="result file, eg: result.csv")
   args = parser.parse_args()
   log.debug(f"{__file__}:{inspect.currentframe().f_lineno}: args: {args}")
 
-  JiraTicket().get(args.date_after).save().cleanup()
+  JiraTicket(args.result_file).get(args.date_after).save().cleanup()
 
 
 if __name__ == "__main__":
